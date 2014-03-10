@@ -1,0 +1,1 @@
+<div<?php if($this->cssID):?><?php echo $this->cssID;?><?php endif;?> class="<?php echo $this->class;?>"></div>

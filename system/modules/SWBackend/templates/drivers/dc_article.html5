@@ -1,0 +1,16 @@
+<li class="<?= $this->strTable;?> click2edit" <?= $this->mouseover;?>>
+  <div class="tl_left" style="padding-left: <?= ($this->intMargin + $this->intSpacing + (empty($this->childs) ? 20 : 0));?>px">
+    <?php if($this->childs):?>
+      <a href="<?= $this->href;?>" onclick="Backend.getScrollOffset();return AjaxRequest.toggleStructure(this,'<?= $this->node;?>_<?= $this->id;?>','<?= $this->level;?>','<?= $this->mode;?>')"><?= $this->image;?></a>
+    <?php endif;?>
+    <?= $this->Icon;?>
+  </div>
+  <div class="tl_right">
+    <?php foreach($this->buttons as $key => $button):?>
+      <?= $button;?>
+    <?php endforeach;?>
+  </div><div style="clear:both"></div>
+</li>
+
+<?= $this->children;?>
+

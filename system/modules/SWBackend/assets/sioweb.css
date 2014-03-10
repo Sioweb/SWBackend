@@ -1,0 +1,6 @@
+.dragNdrop.sw_drag_over {
+	background: #ddd;
+}
+.dragNdrop.sw_drag_over * {
+	pointer-events: none;
+}
