@@ -40,21 +40,24 @@
 		</div>
 
 		<div id="container">
-			<?php if($GLOBALS['TL_CONFIG']['navigation_signet_transformed']):?>
-			<figure>
-				<?php $Signet = $GLOBALS['TL_CONFIG']['navigation_signet_transformed'];?>
-				<img src="<?php echo $Signet['src']; ?>"<?php echo $Signet['imgSize']; ?> alt="<?php echo $this->title; ?>" title="<?php echo $this->title; ?>">
-				<figcaption><?php echo $this->headline; ?></figcaption>
-			</figure>
-			<?php endif;?>
+			<div class="left">
+				<?php if($GLOBALS['TL_CONFIG']['navigation_signet_transformed']):?>
+				<figure>
+					<?php $Signet = $GLOBALS['TL_CONFIG']['navigation_signet_transformed'];?>
+					<img src="<?php echo $Signet['src']; ?>"<?php echo $Signet['imgSize']; ?> alt="<?php echo $this->title; ?>" title="<?php echo $this->title; ?>">
+					<figcaption><?php echo $this->headline; ?></figcaption>
+				</figure>
+				<?php endif;?>
+
+				<?php echo $this->messages; ?>
+				<?php if ($this->noCookies): ?>
+				<p class="tl_error"><?php echo $this->noCookies; ?></p>
+				<?php endif; ?>
+			</div>
 			<form action="<?php echo $this->action; ?>" class="tl_login_form" method="post">
 				<fieldset>
 					<input type="hidden" name="FORM_SUBMIT" value="tl_login">
 					<input type="hidden" name="REQUEST_TOKEN" value="<?php echo REQUEST_TOKEN; ?>">
-					<?php echo $this->messages; ?>
-					<?php if ($this->noCookies): ?>
-					<p class="tl_error"><?php echo $this->noCookies; ?></p>
-					<?php endif; ?>
 					<div>
 						<label for="username"><?php echo $this->username; ?></label>
 						<input type="text" name="username" id="username" onkeyup="if(this.value != '') this.removeClass('empty'); else this.addClass('empty');" class="tl_text empty" value="<?php echo $this->curUsername; ?>" required>
@@ -78,6 +81,7 @@
 					<div class="tl_login_submit_container">
 						<input type="submit" name="login" id="login" class="tl_submit" value="<?php echo $this->loginButton; ?>">
 					</div>
+
 				</fieldset>
 			</form>
 			<a id="go_to_frontend" href="<?php echo $this->frontendFile; ?>" class="footer_preview" title="<?php echo $this->feLink; ?>"><?php echo $this->feLink; ?></a>

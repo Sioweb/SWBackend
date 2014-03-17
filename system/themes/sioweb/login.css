@@ -42,7 +42,6 @@ h1 a {
 /* Container */
 #container {
 	width: 500px;
-	height: 189px;
 	padding:0;
 	margin: 50px auto 0;
 	position: relative;
@@ -88,10 +87,14 @@ figure img {
 }
 
 form,
-figure {
+.left {
 	width: 40%;
 	float: left;
 	padding: 5%;
+}
+
+.left {
+	padding-bottom: 10%;
 }
 
 fieldset {
@@ -174,21 +177,14 @@ fieldset .tl_login_submit_container {
 .login_error label {
 	color:#c33;
 }
-.tl_error,.tl_info,.tl_confirm {
-	margin:0 0 12px;
-	padding:2px 0 3px 20px;
-}
 .tl_error {
 	color:#c33;
-	background:url("images/error.gif") no-repeat left center;
 }
 .tl_info {
 	color:#4b85ba;
-	background:url("images/show.gif") no-repeat 1px center;
 }
 .tl_confirm {
 	color:#77ac45;
-	background:url("images/ok.gif") no-repeat left center;
 }
 
 @media screen and (min-width: 510px) and (min-height: 500px) {
@@ -215,10 +211,13 @@ fieldset .tl_login_submit_container {
 		width: 96%;
 		width: calc(96% - 10px);
 	}
-	form, figure {
+	form, .left {
 		width: 90%;
 		float: left;
 		padding: 5%;
+	}
+	.left {
+		padding-bottom: 0;
 	}
 
 	#go_to_frontend {
@@ -226,5 +225,16 @@ fieldset .tl_login_submit_container {
 		bottom: auto;
 		position: relative;
 		margin: 0 5% 5%;
+	}
+
+	label,
+	input[type=text] {
+		width: calc(100% - 1em - 2px);
+	}
+	.tl_select {
+		width: calc(100% - 2px);
+	}
+	.tl_submit {
+		width: calc(100% - 2px);
 	}
 }

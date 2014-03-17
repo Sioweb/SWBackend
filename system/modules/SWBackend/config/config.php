@@ -25,9 +25,12 @@ $GLOBALS['BE_MOD']['content']['article']['tables'][] ='tl_page';
 
 $GLOBALS['SWBackend']['fileTree'] = false;
 
-$GLOBALS['TL_HOOKS']['initializeSystem'][]  = array('Backend', 'sw_initialize');
-$GLOBALS['TL_HOOKS']['getUserNavigation'][] = array('Backend', 'changeNavigation');
-$GLOBALS['TL_HOOKS']['loadDataContainer'][] = array('Backend', 'extendFileTree');
+if(TL_MODE == 'BE') 
+{
+	$GLOBALS['TL_HOOKS']['initializeSystem'][]  = array('Backend', 'sw_initialize');
+	$GLOBALS['TL_HOOKS']['getUserNavigation'][] = array('Backend', 'changeNavigation');
+	$GLOBALS['TL_HOOKS']['loadDataContainer'][] = array('Backend', 'extendFileTree');
+}
 
 if($_POST['action'] == 'dragNdrop')
 	$GLOBALS['TL_HOOKS']['executePostActions'][] = array('Backend','dragNdropUpload');
@@ -39,4 +42,3 @@ if(TL_MODE == 'BE')
 	$GLOBALS['TL_CSS'][] = 'system/modules/SWBackend/assets/sioweb.css';
 	require_once TL_ROOT . '/system/modules/SWBackend/config/icons/replacer.php';
 }
-
