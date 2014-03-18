@@ -14,48 +14,33 @@ use Contao;
 * @copyright Sascha Weidner, Sioweb
 */
 
-class SWBackend extends \Backend
+class SWBackend extends \Controller
 {
 	public function sw_initialize()
 	{
-		//$this->import('BackendUser', 'User');
-		//if($this->User->backendTheme != 'sioweb')
-		//	return false;
+		\BackendUser::getInstance()->authenticate();
+		if(\BackendUser::getInstance()->backendTheme != 'sioweb')
+			return;
 
-		/* autoload.php */
+		define('TL_FILES_URL','/');
+		define('TL_ASSETS_URL','/');
+		
 		\ClassLoader::addClasses(array(
-			// Drivers
-			'sioweb\contao\extensions\backend\DC_Table'	=> 'system/modules/SWBackend/drivers/DC_Table.php',
+			// Classes
+			'Backend'												=> 'system/modules/SWBackend/classes/Backend.php',
+			'sioweb\contao\extensions\backend\DC_Table'				=> 'system/modules/SWBackend/drivers/DC_Table.php',
 		));
+
 		\TemplateLoader::addFiles(array(
 			'be_main'			=> 'system/modules/SWBackend/templates/backend',
 			'be_login'			=> 'system/modules/SWBackend/templates/backend',
 			'be_maintenance'	=> 'system/modules/SWBackend/templates/backend',
 			'dc_article'		=> 'system/modules/SWBackend/templates/drivers',
-			'ce_separator'		=> 'system/modules/SWBackend/templates/elements',
 		));
-		/* !autoload.php */
-		
-		/* Config.php */
-		$GLOBALS['TL_CTE']['texts']['sw_separator'] = 'ContentSeparator';
-		$GLOBALS['TL_WRAPPERS']['separator'][] = 'sw_separator';
-		$GLOBALS['BE_MOD']['content']['article']['tables'][] ='tl_page';
-		$GLOBALS['SWBackend']['fileTree'] = false;
-
-		$GLOBALS['TL_HOOKS']['getUserNavigation'][] = array('Backend', 'changeNavigation');
-		$GLOBALS['TL_HOOKS']['loadDataContainer'][] = array('Backend', 'extendFileTree');
-
-		$GLOBALS['TL_JAVASCRIPT'][] = 'assets/sioweb/sioweb.min.js?sioweb=true&amp;request_token='.$_SESSION['REQUEST_TOKEN'];
-		$GLOBALS['TL_JAVASCRIPT'][] = 'system/modules/SWBackend/assets/sioweb.js';
-		$GLOBALS['TL_CSS'][] = 'system/modules/SWBackend/assets/sioweb.css';
-
-		if(\Input::post('action') == 'dragNdrop')
-			$GLOBALS['TL_HOOKS']['executePostActions'][] = array('Backend','dragNdropUpload');
-		/* !config.php */
 
 		if($GLOBALS['TL_CONFIG']['navigation_signet'])
 		{
-			$File = \FilesModel::findByPk($GLOBALS['TL_CONFIG']['navigation_signet']);
+			$File = \FilesModel::findBy('uuid',$GLOBALS['TL_CONFIG']['navigation_signet']);
 			if($File)
 			{
 				$arrImage = array(
@@ -74,6 +59,23 @@ class SWBackend extends \Backend
 				$GLOBALS['TL_CONFIG']['navigation_signet_transformed'] = (array)$obj;
 			}
 		}
+
+		/* Config.php */
+		$GLOBALS['TL_CTE']['texts']['sw_separator'] = 'ContentSeparator';
+		$GLOBALS['TL_WRAPPERS']['separator'][] = 'sw_separator';
+		$GLOBALS['BE_MOD']['content']['article']['tables'][] ='tl_page';
+		$GLOBALS['SWBackend']['fileTree'] = false;
+
+		$GLOBALS['TL_HOOKS']['getUserNavigation'][] = array('Backend', 'changeNavigation');
+		$GLOBALS['TL_HOOKS']['loadDataContainer'][] = array('Backend', 'extendFileTree');
+
+		$GLOBALS['TL_JAVASCRIPT'][] = 'assets/sioweb/sioweb.min.js?sioweb=true&amp;request_token='.$_SESSION['REQUEST_TOKEN'];
+		$GLOBALS['TL_JAVASCRIPT'][] = 'system/modules/SWBackend/assets/sioweb.js';
+		$GLOBALS['TL_CSS'][] = 'system/modules/SWBackend/assets/sioweb.css';
+
+		if(\Input::post('action') == 'dragNdrop')
+			$GLOBALS['TL_HOOKS']['executePostActions'][] = array('Backend','dragNdropUpload');
+		/* !config.php */
 
 	}
 }

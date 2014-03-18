@@ -12,7 +12,4 @@
 
 
 if(TL_MODE == 'BE')
-{
-	require_once TL_ROOT . '/system/modules/SWBackend/config/icons/replacer.php';
 	$GLOBALS['TL_HOOKS']['initializeSystem'][]  = array('SWBackend', 'sw_initialize');
-}
