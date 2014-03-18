@@ -61,8 +61,6 @@ class SWBackend extends \Controller
 		}
 
 		/* Config.php */
-		$GLOBALS['TL_CTE']['texts']['sw_separator'] = 'ContentSeparator';
-		$GLOBALS['TL_WRAPPERS']['separator'][] = 'sw_separator';
 		$GLOBALS['BE_MOD']['content']['article']['tables'][] ='tl_page';
 		$GLOBALS['SWBackend']['fileTree'] = false;
 
