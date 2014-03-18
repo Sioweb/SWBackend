@@ -1,19 +1,15 @@
 <?php
 
-/*
- * Contao Open Source CMS
- * Copyright (C) 2005-2012 Leo Feyer
- *
- */
-
 namespace sioweb\contao\extensions\backend;
 
 /**
+* Contao Open Source CMS
+* 
 * @class DC_Table
 * @file DC_Table.php
 * @author Sascha Weidner
 * @version 3.1.0
-* @package kd.contao.extensions.backend
+* @package sw.contao.extensions.backend
 * @copyright Sascha Weidner, Sioweb
 */
 

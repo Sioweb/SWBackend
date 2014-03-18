@@ -1,12 +1,8 @@
 <?php
 
-/*
- * Contao Open Source CMS
- * Copyright (C) 2005-2012 Leo Feyer
- *
- */
-
 /**
+* Contao Open Source CMS
+* 
 * @file tl_article.php
 * @author Sascha Weidner
 * @version 3.0.0

@@ -1,5 +1,15 @@
 <?php
 
+/**
+* Contao Open Source CMS
+*  
+* @file replacer.php
+* @author Sascha Weidner
+* @version 3.0.0
+* @package sioweb.contao.extensions.backend
+* @copyright Sascha Weidner, Sioweb
+*/
+
 // header icons
 $GLOBALS['ICON_REPLACER']['header']['target'] = '.header_buttons span a';
 $GLOBALS['ICON_REPLACER']['header']['addSpace'] = true;

@@ -1,14 +1,10 @@
 <?php
 
-/*
- * Contao Open Source CMS
- * Copyright (C) 2005-2012 Leo Feyer
- *
- */
-
 /**
-* @file SWBackend.php
-* @class SWBackend
+* Contao Open Source CMS
+*  
+* @file Backend.php
+* @class Backend
 * @author Sascha Weidner
 * @version 3.0.0
 * @package sioweb.contao.extensions.backend
@@ -43,23 +39,6 @@ class Backend extends \Contao\Backend
 
 		$GLOBALS['TL_CSS']['font-awesome-icons'] = 'system/modules/SWBackend/assets/icons.css';
 	}
-
-
-	/** /
-	 * Open a back end module and return it as HTML
-	 * @param string
-	 * @return string
-	 * /
-	protected function getBackendModule($module)
-	{
-		$table = \Input::get('table');
-		if(\Input::get('use') != '' && \Input::get('table') == '' && !in_array(\input::get('act'),array('edit','create','select')))
-			\Input::setGet('table',\Input::get('use'));
-		$BackendModule = parent::getBackendModule($module);
-		return $BackendModule;
-	}
-
-	/**/
 
 
 	/**

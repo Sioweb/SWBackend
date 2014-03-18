@@ -1,14 +1,14 @@
 <?php
 
 /**
- * Contao Open Source CMS
- *
- * Copyright (c) 2005-2014 Leo Feyer
- *
- * @package Core
- * @link    https://contao.org
- * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
- */
+* Contao Open Source CMS
+* 
+* @file tl_settings.php
+* @author Sascha Weidner
+* @version 3.0.0
+* @package sioweb.contao.extensions.backend
+* @copyright Sascha Weidner, Sascha
+*/
 
 
 /**

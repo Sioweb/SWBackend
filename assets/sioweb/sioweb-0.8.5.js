@@ -5,12 +5,13 @@
 * @date 2014-03-04
 *
 * This Javascript-Library is a minimal Code for higher Browser bigger than 
-* Internet Explorer 11. It contains a very simple Class/ID-Selector, and no big 
+* Internet Explorer 8. It contains a very simple Class/ID-Selector, and no big 
 * Engine like Sizzle - but maybe in for future?! 
 */
 
 (function(window){
-	var sioweb = (function(){
+var document = window.document,
+	sioweb = (function(){
 
 		/* Initialize the System */
 		var sioweb = function( val ){
@@ -20,12 +21,19 @@
 		/* Something like a constructor :) */
 		sioweb.cl = sioweb.prototype = {
 			newLbr: function( val ){
-				var elem = null;
+				var elem = null,
+					AttributSelector = /([a-zA-Z]*)=+(.*)/.exec(val);
 
-				if(!val)
-					return this['0'];
+				/* some cool CSS stuff */
+				if(AttributSelector !== null)
+					if(AttributSelector[1] == 'name')
+						return sioweb.merge({0:document.getElementsByName(AttributSelector[2])});
 
-				if(val != document)
+				if(val == document)
+					return sioweb.merge({0:[document]},sioweb);
+				else if(val == 'body')
+					return sioweb.merge({0:[document.body]},sioweb);
+				else
 				{
 					if(sioweb.is_string(val))
 					{
@@ -37,9 +45,7 @@
 					else
 						elem = sioweb.merge({0:[val]},sioweb);
 				}
-				else
-					elem = sioweb.merge({0:document},sioweb);
-				
+
 				return elem;
 				/* Do something cool like loading http://sizzlejs.com/ like jQuery (CSS-Slektor-Framework) */
 				/* giving back the Elements? $s(SELECTOR); */
@@ -63,6 +69,29 @@
 		};
 
 		sioweb.merge({
+			initialize: function(){
+				var scripts = document.getElementsByTagName('script');
+				this.each(scripts, function(index, script){
+					/**/
+					if(typeof script.src != 'undefined' && script.src.match(/\?sioweb=true/i))
+					{
+						var params = script.src.split('?')[1];
+						if(typeof params != 'undefined')
+						{
+							var paramGroups = params.split('&');
+							for(var i = 0;i < paramGroups.length;i++)
+							{
+								var paramGroup = paramGroups[i].split('=');
+								sioweb[paramGroup[0]] = paramGroup[1];
+							}
+						}
+					}
+					/**/
+				});
+			}
+		});
+
+		sioweb.merge({
 			each: function( container, callback ){
 				for(var c in container )
 					if( callback( c, container[c]) === false )
@@ -70,23 +99,58 @@
 			},
 			click: function(){
 				var func = arguments[0] || function(){};
-				this.each(this[0],function(index, elem){
+				this.addEvent('click',func);
+				return this;
+			},
+			addEvent: function(event, func){
+				sioweb.each(this['0'],function(index, elem){
 					if(sioweb.is_int(index))
-						elem.addEventListener ('click', func, false);
+					{
+						elem.addEventListener (event, func, false);
+						console.log(elem);
+					}
 				});
 			},
 			ready: function(callback){
 				/**/
-				if(this['0'].addEventListener)
-					this['0'].addEventListener('DOMContentLoaded',callback, false);
-				else if(this.found[0].attachEvent)
-					this['0'].attachEvent( "onreadystatechange", callback );
+				if(this['0'][0].addEventListener)
+					this['0'][0].addEventListener('DOMContentLoaded',callback, false);
+				else if(this['0'][0].attachEvent)
+					this['0'][0].attachEvent( "onreadystatechange", callback );
 				/**/
+				return this;
+			}
+		});
+
+		sioweb.merge({
+			dragenter: function(){
+				var func = arguments[0] || function(){};
+				this.addEvent('dragenter',func);
+				return this;
+			},
+			dragexit: function(){
+				var func = arguments[0] || function(){};
+				this.addEvent('dragexit',func);
+				return this;
+			},
+			dragover: function(){
+				var func = arguments[0] || function(){};
+				this.addEvent('dragover',func);
+				return this;
+			},
+			dragleave: function(){
+				var func = arguments[0] || function(){};
+				sioweb.addEvent('dragleave',func);
+				return this;
+			},
+			dragend: function(){
+				var func = arguments[0] || function(){};
+				sioweb.addEvent('dragend',func);
+				return this;
 			}
 		});
 
 		/* some php-Array-Functions */
-
 		sioweb.merge({
 			shuffle: function shuffle(o){ //v1.0
 				for(var j, x, i = o.length; i; j = Math.floor(Math.random() * i), x = o[--i], o[i] = o[j], o[j] = x);
@@ -103,6 +167,27 @@
 						Data[index] = elem.innerHTML;
 				});
 				return Data;
+			}
+		});
+
+		sioweb.merge({
+			addClass: function(val){
+				var className = this['0'][0].className;
+				var regex = new RegExp("\\b" +val+ "\\b", 'i');
+				if(!className.match(regex))
+					this['0'][0].className += (className ? ' ' : '')+val;
+			},
+			removeClass: function(val) {
+				var className = this['0'][0].className;
+				var regex = new RegExp(".\\b" +val+ "\\b", 'i');
+
+				this['0'][0].className = className.replace(regex,'');
+			},
+			get: function(val){
+
+			},
+			set: function(val){
+
 			}
 		});
 
@@ -146,10 +231,10 @@
 					{
 						try {
 							selfObj.xhr = new ActiveXObject("Msxml2.XMLHTTP");
-						} catch (e) {
+						} catch (err) {
 							try {
 								selfObj.xhr = new ActiveXObject("Microsoft.XMLHTTP");
-							} catch (e) {}
+							} catch (err) {}
 						}
 					}
 
@@ -193,8 +278,10 @@
 					};
 
 					this.send = function(){
-						if(settings.contentMimeType != null)
+						if(settings.contentMimeType !== null)
 							selfObj.xhr.setRequestHeader("Content-Type", settings.contentMimeType);
+						selfObj.xhr.setRequestHeader("X_REQUESTED_WITH", "XMLHttpRequest");
+						
 						selfObj.xhr.send(settings.data);
 					};
 
@@ -205,40 +292,69 @@
 			}
 		});
 	
-
 		/* File-Uploader with Drag&Drop (HTML5 - >= IE9)*/
 		sioweb.merge({
 			uploadAjax: function(settings){
+				var events = {},
+					std_event = function(e){
+						e.stopPropagation();
+						e.preventDefault();
+					};
+
 				if(!settings)
 					settings = {};
 
 				settings = this.merge({
-					url: settings.url||''
+					url: settings.url||'',
+					data: settings.data||{}
 				},settings);
 
+				events = this.merge({
+					dragout: settings.dragout||std_event,
+					dragleave: settings.dragleave||std_event,
+					dragend: settings.dragend||std_event,
+					dragover: settings.dragover||std_event,
+					drop: settings.drop||function(e){
+						var files;
+						e.stopPropagation();
+						e.preventDefault();
+
+						if(typeof this.files != 'undefined')
+							files = this.files;
+						if(typeof e.dataTransfer != 'undefined')
+							files = e.dataTransfer.files;
+
+						sioweb(this).removeClass('sw_drag_over');
+						
+						sioweb.sendFiles(files,settings);
+					}
+				},events);
 
 				this.each(this['0'],function(index, elem){
-					elem.addEventListener('change',function(e){
-						if(this.files){
-							sioweb.sendFiles(this.files,settings);
-						}
-					},false);
+					if(sioweb.is_int(index))
+						sioweb.each(events, function(evt, callback){
+							elem.addEventListener(evt,callback,false);
+						});
 				});
-
 			},
 			sendFiles: function(files,settings){
 				var form = this.FormData();
 
-				for (var i = 0; i < files.length; i++) {
+				if(settings.data)
+					sioweb.each(settings.data,function(index, value){
+						form.append(index, value);
+					});
+
+				for (var i = 0; i < files.length; i++)
 					form.append('fileselect[]', files[i]);
-				}
+
+				form.append('REQUEST_TOKEN',sioweb.request_token);
 
 				this.ajax({
 					contentMimeType: form.contentMimeType||null,
 					url: settings.url,
 					data: form
 				});
-
 			},
 			FormData: function(){
 				if(typeof window.FormData != 'undefined')
@@ -282,13 +398,5 @@
 	})();
 	/* Make'em Global :) but not with this damn $ (use $s) */
 	window.$s = window.sioweb = sioweb;
+	sioweb.initialize();
 })(window);
-
-
-$s(document).ready(function(){
-	$s('fileselect').uploadAjax({
-		url: 'upload.php'
-	});
-});
-
-
