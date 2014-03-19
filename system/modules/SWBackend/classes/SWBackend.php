@@ -19,7 +19,7 @@ class SWBackend extends \Controller
 	public function sw_initialize()
 	{
 		\BackendUser::getInstance()->authenticate();
-		if(\BackendUser::getInstance()->backendTheme != 'sioweb')
+		if((\BackendUser::getInstance()->id && \BackendUser::getInstance()->backendTheme != 'sioweb') || (!\BackendUser::getInstance()->id && !$GLOBALS['TL_CONFIG']['useSiowebTheme']))
 			return;
 
 		define('TL_FILES_URL','/');

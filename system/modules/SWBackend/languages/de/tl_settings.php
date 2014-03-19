@@ -10,5 +10,6 @@
 * @copyright Sascha Weidner, Sioweb
 */
 
+$GLOBALS['TL_LANG']['tl_settings']['useSiowebTheme'] = array('Login Sioweb-Theme','Soll das Sioweb-Theme für den Login-Bereich genutzt werden?.');
 $GLOBALS['TL_LANG']['tl_settings']['navigation_signet'] = array('Logo/Branding','Ermöglicht das einstellen eines Logos in die Backend-Navigation.');
 $GLOBALS['TL_LANG']['tl_settings']['backend_settings'] = 'Backend-Einstellungen';
