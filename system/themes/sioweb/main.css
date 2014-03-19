@@ -1551,9 +1551,13 @@ a.navigation.repository_catalog {
 	margin-right: 5px;
 }
 
-.header_new:before {
+.header_new:before,
+.header_new_folder:before {
 	content: "\f055";
 	color: #60A605;
+}
+.header_sync:before {
+	content: "\f01e";
 }
 .header_toggle:before {
 	content: "\f07c";
@@ -1625,6 +1629,8 @@ a.navigation.repository_catalog:before {
 	content: "\f0ed";
 }
 .tl_right .editheader:before,
+.tl_right_nowrap .modules:before,
+.tl_right_nowrap .editheader:before,
 a.navigation.repository_manager:before {
 	content: "\f085";
 	color: #183196;
@@ -1637,35 +1643,53 @@ a.navigation.repository_manager:before {
 	color: #D91616;
 }
 .tl_right .edit:before,
+.tl_right_nowrap .edit:before,
 .tl_content_right .edit:before {
 	content: "\f040";
 	color: #DEC34E;
 }
 .tl_right .copy:before,
+.tl_right_nowrap .copy:before,
 .tl_content_right .copy:before {
 	content: "\f067";
 	color: #39ac22;
 }
 .tl_right .cut:before,
+.tl_right_nowrap .cut:before,
 .tl_content_right .cut:before {
 	content: "\f064";
 }
 .tl_right .delete:before,
+.tl_right_nowrap .delete:before,
 .tl_content_right .delete:before {
 	content: "\f014";
 	color: #D91616;
+}
+.header_clipboard:before {
+	content: "\f014";
 }
 .tl_right a:before,
 .tl_content_right a:before {
 	margin-right: 5px;
 }
+
+.tl_right .pasteIn:before {
+	content: "\f152";
+}
+.tl_right .pasteAfter:before {
+	content: "\f150";
+}
+
 .tl_right .show,
+.tl_right_nowrap img,
+.tl_right_nowrap .show,
 .tl_content_right .show,
 .tl_content_right img,
 .tl_right img {
 	display: none;
 }
 .tl_right .toggle img,
+.tl_right_nowrap .toggle img,
 .tl_content_right .toggle img {
 	display: inline;
 }
@@ -1677,22 +1701,23 @@ a.navigation.repository_manager:before {
 	content: "\f070";
 }
 
-.icon-minus-sign {
-	color: #D91414;
+.header_back:before {
+	content: "\f0a8";
 }
-#tl_navigation .icon-minus-sign {
-	color: black;
+.header_rss:before {
+	content: "\f09e";
 }
-.icon-trash {
-	color: #D91616;
+.header_import:before,
+.header_theme_import:before {
+	content: "\f093";
 }
-.icon-eye-close {
-	color: #ABC8D6;
+.header_store:before,
+.tl_right_nowrap .exportTheme:before {
+	content: "\f045";
 }
-.icon-calendar,
-.icon-list-alt {
-	color: #79B36F;
+.tl_right_nowrap .css:before {
+	content: "\f0f6";
 }
-.icon-comments {
-	color: #aaa;
+.tl_right_nowrap .layout:before {
+	content: "\f009";
 }

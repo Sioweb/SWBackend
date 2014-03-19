@@ -60,7 +60,7 @@ class Backend extends \Contao\Backend
 		if(\Input::get('use') && \Input::get('table') == '')
 			$strTable = \Input::get('use');
 		$id = ((!\Input::get('act') && \Input::get('id')) || \Input::get('use')) ? \Input::get('id') : $this->Session->get('CURRENT_ID');
-
+		
 		// Store the current ID in the current session
 		if ($id != $this->Session->get('CURRENT_ID'))
 		{
