@@ -59,8 +59,13 @@ class Backend extends \Contao\Backend
 		$strTable = \Input::get('table') ?: $arrModule['tables'][0];
 		if(\Input::get('use') && \Input::get('table') == '')
 			$strTable = \Input::get('use');
-		$id = ((!\Input::get('act') && \Input::get('id')) || \Input::get('use')) ? \Input::get('id') : $this->Session->get('CURRENT_ID');
-		
+		$id = ((!\Input::get('act') && \Input::get('id')) || (\Input::get('use') && \Input::get('table') == '')) ? \Input::get('id') : $this->Session->get('CURRENT_ID');
+
+		/*
+		$strTable = \Input::get('table') ?: $arrModule['tables'][0];
+		$id = (!\Input::get('act') && \Input::get('id')) ? \Input::get('id') : $this->Session->get('CURRENT_ID');
+		/**/
+
 		// Store the current ID in the current session
 		if ($id != $this->Session->get('CURRENT_ID'))
 		{

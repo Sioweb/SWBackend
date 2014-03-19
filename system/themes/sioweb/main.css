@@ -1545,14 +1545,23 @@ a.navigation.repository_catalog {
 
 .cte_type:before,
 #tl_buttons a:before,
-.header_buttons a:before {
+.header_buttons a:before,
+.tl_right a:before,
+.tl_right_nowrap a:before,
+.tl_content_right a:before,
+.tl_right span:before,
+.tl_right_nowrap span:before,
+.tl_content_right span:before {
 	display: inline-block;
 	vertical-align: middle;
 	margin-right: 5px;
 }
 
 .header_new:before,
-.header_new_folder:before {
+.header_new_folder:before,
+.tl_right .pasteNew:before,
+.tl_right_nowrap .pasteNew:before,
+.tl_content_right .pasteNew:before {
 	content: "\f055";
 	color: #60A605;
 }
@@ -1629,12 +1638,22 @@ a.navigation.repository_catalog:before {
 	content: "\f0ed";
 }
 .tl_right .editheader:before,
-.tl_right_nowrap .modules:before,
 .tl_right_nowrap .editheader:before,
+.tl_content_right .editheader:before,
+.tl_right .modules:before,
+.tl_right_nowrap .modules:before,
+.tl_content_right .modules:before,
 a.navigation.repository_manager:before {
 	content: "\f085";
 	color: #183196;
 }
+
+.tl_right .source:before,
+.tl_right_nowrap .source:before,
+.tl_content_right .source:before {
+	content: "\f044";
+}
+
 .header_home:before {
 	content: "\f015";
 }
@@ -1673,10 +1692,14 @@ a.navigation.repository_manager:before {
 	margin-right: 5px;
 }
 
-.tl_right .pasteIn:before {
+.tl_right .pasteIn:before,
+.tl_right_nowrap .pasteIn:before,
+.tl_content_right .pasteIn:before {
 	content: "\f152";
 }
-.tl_right .pasteAfter:before {
+.tl_right .pasteAfter:before,
+.tl_right_nowrap .pasteAfter:before,
+.tl_content_right .pasteAfter:before {
 	content: "\f150";
 }
 
@@ -1686,16 +1709,34 @@ a.navigation.repository_manager:before {
 .tl_content_right .show,
 .tl_content_right img,
 .tl_right img {
-	display: none;
+	display: none !important;
 }
 
 .tl_right .toggle:before,
+.tl_right_nowrap .toggle:before,
+.tl_content_right .toggle:before,
 .cte_type:before {
 	content: "\f06e";
 }
 .tl_right .unpublished:before,
+.tl_right_nowrap .unpublished:before,
+.tl_content_right .unpublished:before,
 .cte_type.unpublished:before {
 	content: "\f070";
+}
+
+.tl_right .drag:before,
+.tl_right_nowrap .drag:before,
+.tl_content_right .drag:before,
+.cte_type.drag:before {
+	content: "\f0b2";
+}
+
+.tl_right .switchUser:before,
+.tl_right_nowrap .switchUser:before,
+.tl_content_right .switchUser:before,
+.cte_type.switchUser:before {
+	content: "\f007\f054";
 }
 
 .header_back:before {

@@ -29,6 +29,7 @@ class SWBackend extends \Controller
 			// Classes
 			'Backend'												=> 'system/modules/SWBackend/classes/Backend.php',
 			'sioweb\contao\extensions\backend\DC_Table'				=> 'system/modules/SWBackend/drivers/DC_Table.php',
+			'sioweb\contao\extensions\backend\DC_Folder'			=> 'system/modules/SWBackend/drivers/DC_Folder.php',
 		));
 
 		\TemplateLoader::addFiles(array(
