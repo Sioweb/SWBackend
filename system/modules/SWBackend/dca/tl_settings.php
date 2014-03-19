@@ -14,7 +14,10 @@
 /**
  * System configuration
  */
-$GLOBALS['TL_DCA']['tl_settings']['palettes']['default'] = '{backend_settings},useSiowebTheme,navigation_signet;'.$GLOBALS['TL_DCA']['tl_settings']['palettes']['default'];
+$semicolon = substr($GLOBALS['TL_DCA']['tl_settings']['palettes']['default'], -1, 1);
+if($semicolon != ';')
+	$semicolon = ';';
+$GLOBALS['TL_DCA']['tl_settings']['palettes']['default'] = $GLOBALS['TL_DCA']['tl_settings']['palettes']['default'].$semicolon.'{sioweb_theme_settings},useSiowebTheme,navigation_signet';
 
 $GLOBALS['TL_DCA']['tl_settings']['fields']['useSiowebTheme'] = array
 (

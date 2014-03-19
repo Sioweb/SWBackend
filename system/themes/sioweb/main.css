@@ -1715,9 +1715,16 @@ a.navigation.repository_manager:before {
 .tl_right .toggle:before,
 .tl_right_nowrap .toggle:before,
 .tl_content_right .toggle:before,
+.tl_right .toggle_invisible.published:before,
+.tl_right_nowrap .toggle_invisible.published:before,
+.tl_content_right .toggle_invisible.published:before,
 .cte_type:before {
 	content: "\f06e";
 }
+
+.tl_right .toggle_invisible:before,
+.tl_right_nowrap .toggle_invisible:before,
+.tl_content_right .toggle_invisible:before,
 .tl_right .unpublished:before,
 .tl_right_nowrap .unpublished:before,
 .tl_content_right .unpublished:before,

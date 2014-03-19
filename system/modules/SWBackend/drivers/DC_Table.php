@@ -585,8 +585,13 @@ class DC_Table extends \Contao\DC_Table
 				$operation['href'] = 'use='.$table.'&amp;'.str_replace('use='.$table.'&amp;','',$operation['href']);
 		
 		// BTW Ich hab keine Ahnung mehr wann ich $this->strTable und wann $table brauche ... 
-		$_buttons .= (\Input::get('act') == 'select' && $table == \Input::get('use')) ? '<input type="checkbox" name="IDS[]" id="ids_'.$id.'" class="tl_tree_checkbox" value="'.$id.'">' : $this->generateButtons($objRow->row(), ($this->strTable == \Input::get('use') ? $this->strTable : $table), $this->root, $blnCircularReference, $childs, $previous, $next);
+		$_button .= (\Input::get('act') == 'select' && $table == \Input::get('use')) ? '<input type="checkbox" name="IDS[]" id="ids_'.$id.'" class="tl_tree_checkbox" value="'.$id.'">' : $this->generateButtons($objRow->row(), ($this->strTable == \Input::get('use') ? $this->strTable : $table), $this->root, $blnCircularReference, $childs, $previous, $next);
 		
+		$_button = preg_replace('/(<a(.+?(?<!class="))class="([^"]+)"([^>]*)>(<img.+?(?<!src=")src=".+?(?<!images\/)images+\/([a-z]+)\.[^"]+"[^<]+>)<\/a>)\s*/','<a class="$3 $3_$6" $2$4>$5</a>',$_button);
+		
+		$_buttons .= $_button;
+		$_button = '';
+
 		// Paste buttons
 		if ($arrClipboard !== false && \Input::get('act') != 'select')
 		{
