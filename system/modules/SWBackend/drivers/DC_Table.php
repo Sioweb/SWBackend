@@ -604,7 +604,7 @@ class DC_Table extends \Contao\DC_Table
 					$_button = $this->$strClass->$strMethod($this, $objRow->row(), $table, $blnCircularReference, $arrClipboard, ($table != \Input::get('use') && $table == 'tl_page'));
 					$foundMode = preg_match_all('/(mode=([^\&]+)[^"]+"\s*)/',$_button,$results);
 					if($foundMode)
-						$_button = preg_replace_callback('/(mode=([^\&]+)[^"]+"\s*)/',array($this,'addClasses'),$_button);
+						$_button = preg_replace_callback('/(mode=([^\&]+)[^"]+"\s*)/',array($this,'addPasteClasses'),$_button);
 					$_buttons .= $_button;
 				}
 			}

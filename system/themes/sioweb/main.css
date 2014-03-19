@@ -1688,15 +1688,12 @@ a.navigation.repository_manager:before {
 .tl_right img {
 	display: none;
 }
-.tl_right .toggle img,
-.tl_right_nowrap .toggle img,
-.tl_content_right .toggle img {
-	display: inline;
-}
 
+.tl_right .toggle:before,
 .cte_type:before {
 	content: "\f06e";
 }
+.tl_right .unpublished:before,
 .cte_type.unpublished:before {
 	content: "\f070";
 }
