@@ -182,6 +182,10 @@ fieldset.checkbox_container,fieldset.radio_container {
 	height:240px;
 }
 
+div.tl_textarea {
+	min-height: 100px;
+}
+
 .mceLayout {
 	width: 100% !important;
 }

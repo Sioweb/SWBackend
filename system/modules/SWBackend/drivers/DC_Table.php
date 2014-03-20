@@ -23,6 +23,7 @@ class DC_Table extends \Contao\DC_Table
 	 */
 	public function __construct($strTable, $arrModule=array())
 	{
+		$this->import('BackendUser','User');
 		// Die Tabelle wird manchmal überschrieben ... es ist 23.42 Uhr und es war irgendwas mit kopieren und deaktivieren...
 		$use = \Input::get('use');
 		if(\Input::get('table') == '' && $use != '' && $strTable != $use)
@@ -62,6 +63,8 @@ class DC_Table extends \Contao\DC_Table
 	 */
 	protected function panel()
 	{
+		if($this->User->doNotUseTheme || $GLOBALS['TL_CONFIG']['doNotUseTheme'])
+			return parent::panel();
 		if ($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['panelLayout'] == '')
 		{
 			return '';

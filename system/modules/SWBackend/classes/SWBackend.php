@@ -19,7 +19,7 @@ class SWBackend extends \Controller
 	public function sw_initialize()
 	{
 		\BackendUser::getInstance()->authenticate();
-		if((\BackendUser::getInstance()->id && \BackendUser::getInstance()->backendTheme != 'sioweb') || (!\BackendUser::getInstance()->id && !$GLOBALS['TL_CONFIG']['useSiowebTheme']))
+		if((\BackendUser::getInstance()->id && \BackendUser::getInstance()->backendTheme != 'sioweb' && (!\BackendUser::getInstance()->doNotUseTheme && !$GLOBALS['TL_CONFIG']['doNotUseTheme'])) || (!\BackendUser::getInstance()->id && !$GLOBALS['TL_CONFIG']['useSiowebTheme']))
 			return;
 
 		define('TL_FILES_URL','/');
@@ -32,12 +32,13 @@ class SWBackend extends \Controller
 			'sioweb\contao\extensions\backend\DC_Folder'			=> 'system/modules/SWBackend/drivers/DC_Folder.php',
 		));
 
-		\TemplateLoader::addFiles(array(
-			'be_main'			=> 'system/modules/SWBackend/templates/backend',
-			'be_login'			=> 'system/modules/SWBackend/templates/backend',
-			'be_maintenance'	=> 'system/modules/SWBackend/templates/backend',
-			'dc_article'		=> 'system/modules/SWBackend/templates/drivers',
-		));
+		if(!\BackendUser::getInstance()->doNotUseTheme && !$GLOBALS['TL_CONFIG']['doNotUseTheme'])
+			\TemplateLoader::addFiles(array(
+				'be_main'			=> 'system/modules/SWBackend/templates/backend',
+				'be_login'			=> 'system/modules/SWBackend/templates/backend',
+				'be_maintenance'	=> 'system/modules/SWBackend/templates/backend',
+				'dc_article'		=> 'system/modules/SWBackend/templates/drivers',
+			));
 
 		if($GLOBALS['TL_CONFIG']['navigation_signet'])
 		{
