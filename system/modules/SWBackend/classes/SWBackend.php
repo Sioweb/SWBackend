@@ -22,8 +22,8 @@ class SWBackend extends \Controller
 		if((\BackendUser::getInstance()->id && \BackendUser::getInstance()->backendTheme != 'sioweb' && (!\BackendUser::getInstance()->doNotUseTheme && !$GLOBALS['TL_CONFIG']['doNotUseTheme'])) || (!\BackendUser::getInstance()->id && !$GLOBALS['TL_CONFIG']['useSiowebTheme']))
 			return;
 
-		define('TL_FILES_URL','/');
-		define('TL_ASSETS_URL','/');
+		define('TL_FILES_URL','');
+		define('TL_ASSETS_URL','');
 		
 		\ClassLoader::addClasses(array(
 			// Classes
