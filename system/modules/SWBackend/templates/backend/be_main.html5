@@ -88,14 +88,26 @@
 										<a href="<?php echo $arrConfig['href']; ?>" class="<?php echo $arrConfig['class']; ?>" title="<?php echo $arrConfig['title']; ?>"<?php echo $arrConfig['icon']; ?>>
 											<?php echo $arrConfig['label']; ?>
 										</a>
-										<?php if($arrConfig['tl_buttons']):?>
-										<span class="tl_buttons">
-										<?php foreach($arrConfig['tl_buttons'] as $button):?>
-										<a href="<?php echo $button['href'];?>" class="<?php echo $button['class'];?>" title="<?php echo $button['title'];?>"<?php echo $button['attributes'];?>>&nbsp;</a>
-										<?php endforeach;?>
-										</span>
-										<?php endif;?>
 									</li>
+									<?php if($arrConfig['tl_globaloperations']):?>
+									<li class="tl_globaloperations">
+									<?php foreach($arrConfig['tl_globaloperations'] as $button):?>
+									<a href="<?php echo $button['href'];?>" class="<?php echo $button['class'];?>" title="<?php echo $button['title'];?>"<?php echo $button['attributes'];?>>&nbsp;</a>
+									<?php endforeach;?>
+									</li>
+									<?php endif;?>
+									<?php if($arrConfig['tl_buttons']):?>
+									<?php foreach($arrConfig['tl_buttons'] as $bKey => $icons):?>
+									<li class="tl_buttons">
+										<div class="buttons">
+											<?php foreach($icons['buttons'] as $iKey => $icon):?>
+											<a href="<?php echo $icon['href'];?>" class="<?php echo $icon['class'];?>" title="<?php echo $icon['title'];?>"<?php echo $icon['attributes'];?>>&nbsp;</a>
+											<?php endforeach;?>
+										</div>
+										<span><?php echo $icons['theme']['title'];?></span>
+									</li>
+									<?php endforeach;?>
+									<?php endif;?>
 									<?php endforeach; ?>
 								</ul>
 							</li>

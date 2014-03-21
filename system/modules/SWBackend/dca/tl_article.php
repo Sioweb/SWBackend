@@ -25,3 +25,15 @@ $GLOBALS['TL_DCA']['tl_article']['list']['global_operations']['allArticles'] = a
 	'class'               => 'header_edit_all',
 	'attributes'          => 'onclick="Backend.getScrollOffset()" accesskey="e"'
 );
+
+$GLOBALS['TL_DCA']['tl_article']['list']['operations']['toggle']['button_callback'][0] = 'sw_article';
+
+class sw_article extends tl_article
+{	
+	public function toggleIcon($row, $href, $label, $title, $icon, $attributes)
+	{
+		$Icon = parent::toggleIcon($row, $href, $label, $title, $icon, $attributes);
+		$Icon = preg_replace('/toggleVisibility\(([a-zA-Z0-9$]+)\,([a-zA-Z0-9]+)\)/', "toggleVisibility($1,$2,'tl_article')",$Icon);
+		return $Icon;
+	}
+}

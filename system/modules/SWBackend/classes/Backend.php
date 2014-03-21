@@ -339,39 +339,60 @@ class Backend extends \Contao\Backend
 				// Seitenstruktur killen - ist in der DCA noch nötig.
 				if($mKey == 'page')
 					unset($arrModules[$tKey]['modules'][$mKey]);
-				$this->loadDataContainer($modul['tables'][0]);
-				$Globals = $GLOBALS['TL_DCA'][$modul['tables'][0]]['list']['global_operations'];
-				$Operations = $GLOBALS['TL_DCA'][$modul['tables'][0]]['list'];
-				
-				/** /
-				$arrModules[$tKey]['modules'][$mKey]['tl_buttons'][] = array(
-					'key'=>'add',
-					'title'=>'Add',
-					'label'=>'Add',
-					'class'=>'header_new',
-					'href'=>$this->addToUrl('do='.end((explode('_',$modul['tables'][0]))).'&amp;act=paste')
-				);
-				if($Globals)
-					foreach($Globals as $oKey => $operation)
-						if(!in_array($oKey,array('all','toggleNodes')))
-							$arrModules[$tKey]['modules'][$mKey]['tl_buttons'][] = array_merge($operation,array(
-								'key'=>$oKey,
-								'title'=>$operation['label'][0],
-								'label'=>$operation['label'][1],
-								'href'=>$this->addToUrl($operation['href'])
-							));
-				/** *
-				if($Operations)
-					foreach($Operations as $oKey => $operation)
-						if(!in_array($oKey,array('edit','editHeader','cut','delete','show')))
-							$arrModules[$tKey]['modules'][$mKey]['tl_buttons'][] = array_merge($operation,array(
-								'key'=>$oKey,
-								'title'=>$operation['label'][0],
-								'label'=>$operation['label'][1],
-								'href'=>$this->addToUrl($operation['href'])
-							));
-					echo '<pre>'.print_r($Operations,1).'</pre>';
-				/**/
+
+				if($mKey == 'themes')
+				{
+					$this->loadDataContainer($modul['tables'][0]);
+					$Globals = $GLOBALS['TL_DCA'][$modul['tables'][0]]['list']['global_operations'];
+					$Operations = $GLOBALS['TL_DCA'][$modul['tables'][0]]['list'];
+					/**/
+
+					$arrModules[$tKey]['modules'][$mKey]['tl_globaloperations'][] = array(
+						'key'=>'add',
+						'title'=>'Add',
+						'label'=>'Add',
+						'class'=>'header_new',
+						'href'=>$this->addToUrl('do='.$mKey.'&amp;act=create')
+					);
+					if($Globals)
+						foreach($Globals as $oKey => $operation)
+							if(!in_array($oKey,array('all','toggleNodes')))
+								$arrModules[$tKey]['modules'][$mKey]['tl_globaloperations'][] = array_merge($operation,array(
+									'key'=>$oKey,
+									'title'=>$operation['label'][0],
+									'label'=>$operation['label'][1],
+									'href'=>$this->addToUrl($operation['href'])
+								));
+					$Theme = \ThemeModel::findAll();
+					if($Theme)
+					{
+						while($Theme->next())
+						{
+							$arrModules[$tKey]['modules'][$mKey]['tl_buttons'][$Theme->id]['theme'] = array(
+								'title' => $Theme->name
+							);
+							foreach($Operations['operations'] as $oKey => $operation)
+								$arrModules[$tKey]['modules'][$mKey]['tl_buttons'][$Theme->id]['buttons'][] = array(
+									'title'=>$Theme->title,
+									'label'=>$Theme->title,
+									'class'=>$oKey,
+									'href'=>$this->addToUrl('do='.$mKey.'&amp;act='.$oKey)
+								);
+						}
+					}
+					/** /
+					if($Operations)
+						foreach($Operations as $oKey => $operation)
+							if(!in_array($oKey,array('edit','editHeader','cut','delete','show')))
+								$arrModules[$tKey]['modules'][$mKey]['tl_buttons'][] = array_merge($operation,array(
+									'key'=>$oKey,
+									'title'=>$operation['label'][0],
+									'label'=>$operation['label'][1],
+									'href'=>$this->addToUrl($operation['href'])
+								));
+						echo '<pre>'.print_r($Operations,1).'</pre>';
+					/**/
+				}
 			}
 			#echo '<pre>'.print_r($arrModules,1).'</pre>'; 
 		return $arrModules;

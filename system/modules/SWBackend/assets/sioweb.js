@@ -96,7 +96,6 @@ Backend.moduleWizard = function(el, command, id) {
 
 AjaxRequest.toggleVisibility = function(el, id, table) {
 	el.blur();
-
 	var img = null,
 		image = $(el).getFirst('img'),
 		publish = (image.src.indexOf('invisible') != -1),
@@ -176,12 +175,12 @@ AjaxRequest.toggleVisibility = function(el, id, table) {
 		image.getParent('a').addClass('published');
 		image.getParent('a').removeClass('unpublished');
 		image.src = image.src.replace('invisible.gif', 'visible.gif');
-		new Request.Contao({'url':window.location.href, 'followRedirects':false}).get({'tid':id, 'state':1});
+		new Request.Contao({'url':window.location.href, 'followRedirects':false}).get({'tid':id, 'state':1,'use': table});
 	} else {
 		image.getParent('a').addClass('unpublished');
 		image.getParent('a').removeClass('published');
 		image.src = image.src.replace('visible.gif', 'invisible.gif');
-		new Request.Contao({'url':window.location.href, 'followRedirects':false}).get({'tid':id, 'state':0});
+		new Request.Contao({'url':window.location.href, 'followRedirects':false}).get({'tid':id, 'state':0,'use': table});
 	}
 
 	return false;

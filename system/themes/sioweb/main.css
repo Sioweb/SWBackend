@@ -237,21 +237,60 @@ form:hover .tl_opener {
 }
 #tl_navigation .tl_level_2 {
 	width: 100%;
-	display: table;
 	padding:0 0 9px 0 !important;
 }
 #tl_navigation .tl_level_2 li {
 	overflow: hidden;
-	display: table-row;
 }
 #tl_navigation .tl_level_2 li > a {
-	
-	display: table-cell;
 	font-weight:normal;
 	line-height:19px;
 	padding-left: 48px;
 	background-position: 17px center;
 }
+
+#tl_navigation .tl_buttons span {
+	width: 100%;
+	display: block;
+
+	-webkit-transition: opacity .5s;
+	transition: opacity .5s;
+}
+
+#tl_navigation .tl_buttons .buttons {
+	top: 0;
+	left: 50px;
+	width: 100%;
+	opacity: 0;
+	position: absolute;
+	-webkit-transition: opacity .5s;
+	transition: opacity .5s;
+}
+
+#tl_navigation .tl_buttons:hover span {
+	z-index: 1;
+	opacity: 0;
+}
+#tl_navigation .tl_buttons:hover .buttons {
+	opacity: 1;
+	z-index: 10;
+}
+
+#tl_navigation .tl_level_2 .tl_buttons a,
+#tl_navigation .tl_level_2 .tl_globaloperations a {
+	padding: 0;
+	width: auto;
+	display: inline-block;
+	vertical-align: middle;
+}
+#tl_navigation .tl_level_2 .tl_buttons,
+#tl_navigation .tl_level_2 .tl_globaloperations {
+	display: block;
+	text-align: left;
+	padding-left: 50px;
+	position: relative;
+}
+
 #tl_navigation .tl_level_2 li:hover {
 	background: #E8F0FA;
 }
@@ -328,7 +367,7 @@ h2.sub_headline_index {
 	padding:2px 0 3px 20px;
 	background:url("images/error.gif") no-repeat left center;
 }
-.tl_error,.tl_confirm,.tl_info,.tl_new {
+.tl_error,.tl_confirm,.tl_new {
 	margin:1px 0 0;
 	padding:4px 5px 5px 25px;
 	border-radius:3px;
@@ -338,9 +377,6 @@ h2.sub_headline_index {
 }
 .tl_confirm {
 	background:#ebf6fc url("images/ok.gif") no-repeat 5px center;
-}
-.tl_info {
-	background:#ebf6fc url("images/show.gif") no-repeat 6px center;
 }
 .tl_new {
 	background:#ebf6fc url("images/featured.gif") no-repeat 5px center;
@@ -1537,12 +1573,16 @@ a.navigation:before {
 	-moz-osx-font-smoothing: grayscale;
 }
 
+a.navigation.faq,
 a.navigation.calendar,
+a.navigation.comments,
+a.navigation.newsletter,
 a.navigation.repository_manager,
 a.navigation.repository_catalog {
 	background: none !important;
 }
 
+.tl_info:before,
 .cte_type:before,
 #tl_buttons a:before,
 .header_buttons a:before,
@@ -1555,6 +1595,10 @@ a.navigation.repository_catalog {
 	display: inline-block;
 	vertical-align: middle;
 	margin-right: 5px;
+}
+
+.tl_info:before {
+	content: "\f05a";
 }
 
 .header_new:before,
@@ -1583,7 +1627,16 @@ a.navigation.article:before {
 a.navigation.calendar:before {
 	content: "\f01c";
 }
-a.navigation.calendar:before,
+a.navigation.faq:before {
+	content: "\f059";
+}
+a.navigation.newsletter:before {
+	content: "\f003";
+}
+a.navigation.calendar:before {
+	content: "\f073";
+	color: #79B36F;
+}
 a.navigation.form:before {
 	content: "\f00b";
 	color: #79B36F;
@@ -1591,6 +1644,9 @@ a.navigation.form:before {
 a.navigation.news:before {
 	content: "\f01c";
 	color: #67b4b5;
+}
+a.navigation.comments:before {
+	content: "\f086";
 }
 a.navigation.themes:before {
 	content: "\f009";
@@ -1637,6 +1693,7 @@ a.navigation.undo:before {
 a.navigation.repository_catalog:before {
 	content: "\f0ed";
 }
+#tl_navigation a.modules:before,
 .tl_right .editheader:before,
 .tl_right_nowrap .editheader:before,
 .tl_content_right .editheader:before,
@@ -1661,12 +1718,14 @@ a.navigation.repository_manager:before {
 	content: "\f011";
 	color: #D91616;
 }
+#tl_navigation a.edit:before,
 .tl_right .edit:before,
 .tl_right_nowrap .edit:before,
 .tl_content_right .edit:before {
 	content: "\f040";
 	color: #DEC34E;
 }
+#tl_navigation a.copy:before,
 .tl_right .copy:before,
 .tl_right_nowrap .copy:before,
 .tl_content_right .copy:before {
@@ -1678,6 +1737,7 @@ a.navigation.repository_manager:before {
 .tl_content_right .cut:before {
 	content: "\f064";
 }
+#tl_navigation a.delete:before,
 .tl_right .delete:before,
 .tl_right_nowrap .delete:before,
 .tl_content_right .delete:before {
@@ -1757,12 +1817,16 @@ a.navigation.repository_manager:before {
 	content: "\f093";
 }
 .header_store:before,
+#tl_navigation a.exportTheme:before,
 .tl_right_nowrap .exportTheme:before {
 	content: "\f045";
 }
+
+#tl_navigation a.css:before,
 .tl_right_nowrap .css:before {
 	content: "\f0f6";
 }
+#tl_navigation a.layout:before,
 .tl_right_nowrap .layout:before {
 	content: "\f009";
 }

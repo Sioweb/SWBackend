@@ -60,12 +60,12 @@
 					<input type="hidden" name="REQUEST_TOKEN" value="<?php echo REQUEST_TOKEN; ?>">
 					<div>
 						<label for="username"><?php echo $this->username; ?></label>
-						<input type="text" name="username" id="username" onkeyup="if(this.value != '') this.removeClass('empty'); else this.addClass('empty');" class="tl_text empty" value="<?php echo $this->curUsername; ?>" required>
+						<input type="text" name="username" id="username" onchange="if(this.value != '') this.removeClass('empty'); else this.addClass('empty');" class="tl_text empty" value="<?php echo $this->curUsername; ?>" required>
 					</div>
 
 					<div>
 						<label for="password"><?php echo $this->password; ?></label>
-						<input type="password" name="password" id="password" onkeyup="if(this.value != '') this.removeClass('empty'); else this.addClass('empty');" class="tl_text empty" value="" required>
+						<input type="password" name="password" id="password" onchange="if(this.value != '') this.removeClass('empty'); else this.addClass('empty');" class="tl_text empty" value="" required>
 					</div>
 
 					<div>
