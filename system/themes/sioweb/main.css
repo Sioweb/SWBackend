@@ -1,11 +1,8 @@
 /**
  * Contao Open Source CMS
  *
- * Copyright (c) 2005-2013 Leo Feyer
- *
- * @package Core
- * @link    https://contao.org
- * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
+ * @author Sascha Weidner
+ * @Copyright Sascha Weidner, Sioweb
  */
 
  @font-face {
@@ -287,6 +284,7 @@ form:hover .tl_opener {
 #tl_navigation .tl_level_2 .tl_globaloperations {
 	display: block;
 	text-align: left;
+	line-height: 25px;
 	padding-left: 50px;
 	position: relative;
 }
@@ -1582,6 +1580,7 @@ a.navigation.repository_catalog {
 	background: none !important;
 }
 
+a.navigation,
 .tl_info:before,
 .cte_type:before,
 #tl_buttons a:before,

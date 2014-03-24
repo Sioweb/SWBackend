@@ -39,6 +39,13 @@ class SWBackend extends \Controller
 				'be_maintenance'	=> 'system/modules/SWBackend/templates/backend',
 				'dc_article'		=> 'system/modules/SWBackend/templates/drivers',
 			));
+		else
+		{
+			\TemplateLoader::addFiles(array(
+				'be_main'			=> 'system/modules/SWBackend/templates/noTheme/backend',
+			));
+			$GLOBALS['TL_CSS'][] = 'system/modules/SWBackend/assets/main.css';
+		}
 
 		if($GLOBALS['TL_CONFIG']['navigation_signet'])
 		{

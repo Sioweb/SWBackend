@@ -372,12 +372,22 @@ class Backend extends \Contao\Backend
 								'title' => $Theme->name
 							);
 							foreach($Operations['operations'] as $oKey => $operation)
+							{
+								if($oKey == 'show')
+									continue;
+								
 								$arrModules[$tKey]['modules'][$mKey]['tl_buttons'][$Theme->id]['buttons'][] = array(
 									'title'=>$Theme->title,
 									'label'=>$Theme->title,
+									'icon'=>$this->generateIcon($Theme->row(), 'tl_theme',$oKey),
 									'class'=>$oKey,
-									'href'=>$this->addToUrl('do='.$mKey.'&amp;act='.$oKey)
+									'href'=>($operation['href'] ? $this->addToUrl('do='.$mKey.'&amp;'.$operation['href'].'&amp;id='.$Theme->id.
+										(strpos($operation['href'],'act=') === false ? '&amp;act=&amp;' : '' ) .
+										(strpos($operation['href'],'table=') === false ? '&amp;table=' : '' ) .
+										(strpos($operation['href'],'use=') === false ? '&amp;use=' : '' )) 
+										: $this->addToUrl('do='.$mKey.'&amp;act='.$oKey.'&amp;id='.$Theme->id))
 								);
+							}
 						}
 					}
 					/** /
@@ -396,5 +406,56 @@ class Backend extends \Contao\Backend
 			}
 			#echo '<pre>'.print_r($arrModules,1).'</pre>'; 
 		return $arrModules;
+	}
+
+	/**
+	 * Compile buttons from the table configuration array and return them as HTML
+	 * @param array
+	 * @param string
+	 * @param array
+	 * @param boolean
+	 * @param array
+	 * @param integer
+	 * @param integer
+	 * @return string
+	 */
+	protected function generateIcon($arrRow, $strTable, $act)
+	{
+		if(!$act)
+			return '';
+
+		$v = is_array($GLOBALS['TL_DCA'][$strTable]['list']['operations'][$act]) ? $GLOBALS['TL_DCA'][$strTable]['list']['operations'][$act] : array($GLOBALS['TL_DCA'][$strTable]['list']['operations'][$act]);
+		$id = specialchars(rawurldecode($arrRow['id']));
+
+		$label = $v['label'][0] ?: $act;
+		$title = sprintf($v['label'][1] ?: $act, $id);
+		$attributes = ($v['attributes'] != '') ? ' ' . ltrim(sprintf($v['attributes'], $id, $id)) : '';
+
+		$return = '';
+		// Add the key as CSS class
+		if (strpos($attributes, 'class="') !== false)
+			$attributes = str_replace('class="', 'class="' . $act . ' ', $attributes);
+		else
+			$attributes = ' class="' . $act . '"' . $attributes;
+
+		// Call a custom function instead of using the default button
+		if (is_array($v['button_callback']))
+		{
+			$this->import($v['button_callback'][0]);
+			return trim($this->$v['button_callback'][0]->$v['button_callback'][1]($arrRow, $v['href'], $label, $title, $v['icon'], $attributes, $strTable));
+		}
+		elseif (is_callable($v['button_callback']))
+		{
+			echo $v['button_callback'];
+			return trim($v['button_callback']($arrRow, $v['href'], $label, $title, $v['icon'], $attributes, $strTable));
+		}
+
+		if ($k != 'move' && $v != 'move')
+		{
+			if ($k == 'show')
+				return trim('<a href="'.$this->addToUrl($v['href'].'&amp;id='.$arrRow['id'].'&amp;popup=1').'" title="'.specialchars($title).'" onclick="Backend.openModalIframe({\'width\':765,\'title\':\''.specialchars(str_replace("'", "\\'", sprintf($GLOBALS['TL_LANG'][$strTable]['show'][1], $arrRow['id']))).'\',\'url\':this.href});return false"'.$attributes.'>'.\Image::getHtml($v['icon'], $label).'</a> ');
+			else
+				return trim('<a href="'.$this->addToUrl($v['href'].'&amp;id='.$arrRow['id']).'" title="'.specialchars($title).'"'.$attributes.'>'.\Image::getHtml($v['icon'], $label).'</a>');
+		}
 	}
 }

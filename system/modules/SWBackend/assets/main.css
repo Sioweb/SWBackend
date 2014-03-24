@@ -1,0 +1,69 @@
+#tl_navigation figure {
+	width: 90%;
+	margin: 24px auto 10px;
+}
+#tl_navigation figure img {
+	width: 100%;
+	height: auto;
+}
+
+#tl_navigation .tl_buttons {
+	line-height: 20px;
+}
+#tl_navigation .tl_buttons span {
+	width: 100%;
+	display: block;
+
+	-webkit-transition: opacity .5s;
+	transition: opacity .5s;
+}
+
+#tl_navigation .tl_buttons .buttons {
+	top: 0;
+	left: 20px;
+	width: 100%;
+	opacity: 0;
+	position: absolute;
+	-webkit-transition: opacity .5s;
+	transition: opacity .5s;
+}
+
+#tl_navigation .tl_buttons:hover span {
+	z-index: 1;
+	opacity: 0;
+}
+#tl_navigation .tl_buttons:hover .buttons {
+	opacity: 1;
+	z-index: 10;
+}
+
+#tl_navigation .tl_level_2 .tl_buttons a,
+#tl_navigation .tl_level_2 .tl_globaloperations a {
+	margin: 0;
+	padding: 0;
+	width: 25px;
+	display: inline-block;
+	vertical-align: middle;
+}
+#tl_navigation .tl_level_2 .tl_buttons a {
+	width: auto
+}
+#tl_navigation .tl_level_2 .tl_buttons,
+#tl_navigation .tl_level_2 .tl_globaloperations {
+	display: block;
+	text-align: left;
+	padding-left: 20px;
+	position: relative;
+}
+
+.tl_formbody_submit {
+	left: 0;
+	bottom: 0;
+	width: 100%;
+	position: fixed;
+	text-align: right;
+}
+
+#footer {
+	margin-bottom: 40px
+}
