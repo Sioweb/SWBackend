@@ -8,10 +8,14 @@ Backend.removeMultiSrcThumbnails = function(item, id, oid) {
 	var parent = item.getParent('li'),
 		uuid = parent.get('data-id'),
 		re = new RegExp(",?"+uuid,'g'),
-		idv = document.getElementById(id).value.replace(re,''),
-		oidv = document.getElementById(oid).value.replace(re,'');
+		idv = document.getElementById(id).value.replace(re,'');
 	document.getElementById(id).value = (idv.substring(0,1) == ',' ? idv.substring(1) : idv);
-	document.getElementById(oid).value = (oidv.substring(0,1) == ',' ? oidv.substring(1) : oidv);
+
+	if(document.getElementById(oid) !== null)
+	{
+		var oidv = document.getElementById(oid).value.replace(re,'');
+		document.getElementById(oid).value = (oidv.substring(0,1) == ',' ? oidv.substring(1) : oidv);
+	}
 	parent.destroy();
 };
 

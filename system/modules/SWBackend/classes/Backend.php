@@ -331,8 +331,9 @@ class Backend extends \Contao\Backend
 				$Image = \Image::getHtml(\Image::get($fileObj->path, 80, 60, 'center_center'), '', 'class="gimage"');
 				$fileObj->uuid = \String::binToUuid($fileObj->uuid);
 				$fileObj->img = $Image;
+
 			}
-			echo json_encode($fileObj->fetchAll());
+			echo json_encode(array('fieldName'=>\Input::post('fieldName'), 'images'=>$fileObj->fetchAll()));
 		}
 	}
 

@@ -310,7 +310,6 @@ var document = window.document,
 						settings.beforeSend(selfObj['0'],files);
 
 						sioweb(this).removeClass('sw_drag_over');
-						
 						Backend.openModalFolderSelector({
 							id: 'multiSRC',
 							width: 765,
@@ -334,6 +333,8 @@ var document = window.document,
 					selfObj = arguments[2]||null,
 					selfItems = selfObj['0'];
 
+				console.log();
+
 				if(settings.data)
 					selfObj.each(settings.data,function(index, value){
 						form.append(index, value);
@@ -342,6 +343,7 @@ var document = window.document,
 				for (var i = 0; i < files.length; i++)
 					form.append('files[]', files[i]);
 
+				form.append('fieldName',selfItems[0].getElementsByTagName('input')[0].name);
 				form.append('REQUEST_TOKEN',contao.request_token);
 
 				this.ajax(selfObj.merge(settings,{

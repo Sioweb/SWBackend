@@ -48,14 +48,12 @@ class SWBackend extends \Controller
 			$GLOBALS['TL_CSS'][] = 'system/modules/SWBackend/assets/main.css';
 		}
 
-		if(\BackendUser::getInstance()->useDragNDropUploader)
+		if(\BackendUser::getInstance()->useDragNDropUploader != false)
 		{
 			\ClassLoader::addClasses(array(
 				// Widgets
-				'FileTree'												=> 'system/modules/SWBackend/widgets/FileTree.php'
+				'FileTree' => 'system/modules/SWBackend/widgets/FileTree.php'
 			));
-
-			$GLOBALS['TL_CTE']['media']['image'] = $GLOBALS['TL_CTE']['media']['gallery'];
 		}
 
 		if($GLOBALS['TL_CONFIG']['navigation_signet'])
@@ -89,7 +87,8 @@ class SWBackend extends \Controller
 
 		$GLOBALS['TL_JAVASCRIPT'][] = 'system/modules/SWBackend/assets/core.js';
 		$GLOBALS['TL_JAVASCRIPT'][] = 'assets/sioweb/sioweb-0.8.5.js';
-		$GLOBALS['TL_JAVASCRIPT'][] = 'system/modules/SWBackend/assets/sioweb.js';
+		if(\BackendUser::getInstance()->useDragNDropUploader != false)
+			$GLOBALS['TL_JAVASCRIPT'][] = 'system/modules/SWBackend/assets/dragAndDrop.js';
 		$GLOBALS['TL_CSS'][] = 'system/modules/SWBackend/assets/sioweb.css';
 
 		if(\Input::post('FORM_SUBMIT') === 'tl_upload' && \Input::post('isAjaxRequest') === '1')

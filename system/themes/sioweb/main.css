@@ -978,10 +978,6 @@ label.tl_change_selected {
 ul.sgallery {
 	overflow:hidden;
 }
-ul.sgallery li {
-	float:left;
-	margin-right:0;
-}
 .gimage {
 	margin:2px;
 	border:1px solid #808080;
@@ -1282,21 +1278,39 @@ ul.sgallery li {
 	overflow:hidden;
 	display:inline;
 }
-ul.sortable li {
+.selector_container li {
 	width: 8%;
 	float: left;
 	cursor: move;
 	margin-right: 2%;
 	position: relative;
 }
-ul.sortable li:last-child {
+.selector_container li:last-child {
 	margin-right: 0;
 }
-ul.sortable img {
+.selector_container img {
 	width: 100%;
 	height: auto;
 	display: block;
 }
+
+.sortable_delete {
+	top: 5px;
+	right: 5px;
+	opacity: .4;
+	color: #792020;
+	cursor: pointer;
+	position: absolute;
+	-webkit-transition: opacity .4s;
+	-moz-transition: opacity .4s;
+	-ms-transition: opacity .4s;
+	-o-transition: opacity .4s;
+	transition: opacity .4s;
+}
+.selector_container li:hover .sortable_delete {
+	opacity: 1;
+}
+
 #manager {
 	margin-top:9px;
 	background:#f3f3f3;
@@ -1848,23 +1862,6 @@ a.navigation.repository_manager:before {
 .tl_right_nowrap .layout:before {
 	content: "\f009";
 }
-
-.sortable_delete {
-	top: 5px;
-	right: 5px;
-	opacity: .4;
-	color: #792020;
-	cursor: pointer;
-	position: absolute;
-	-webkit-transition: opacity .4s;
-	-moz-transition: opacity .4s;
-	-ms-transition: opacity .4s;
-	-o-transition: opacity .4s;
-	transition: opacity .4s;
-}
 .sortable_delete:before {
 	content: "\f057";
-}
-.sortable li:hover .sortable_delete {
-	opacity: 1;
 }
