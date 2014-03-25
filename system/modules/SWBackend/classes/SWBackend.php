@@ -54,6 +54,8 @@ class SWBackend extends \Controller
 				// Widgets
 				'FileTree'												=> 'system/modules/SWBackend/widgets/FileTree.php'
 			));
+
+			$GLOBALS['TL_CTE']['media']['image'] = $GLOBALS['TL_CTE']['media']['gallery'];
 		}
 
 		if($GLOBALS['TL_CONFIG']['navigation_signet'])
