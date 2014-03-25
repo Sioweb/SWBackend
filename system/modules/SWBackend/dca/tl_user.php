@@ -27,11 +27,10 @@ $GLOBALS['TL_DCA']['tl_user']['fields']['doNotUseTheme'] = array(
 
 );$GLOBALS['TL_DCA']['tl_user']['fields']['useDragNDropUploader'] = array(
 	'label'                   => &$GLOBALS['TL_LANG']['tl_user']['useDragNDropUploader'],
-	'default'                 => 1,
 	'exclude'                 => true,
 	'inputType'               => 'checkbox',
 	'eval'                    => array('tl_class'=>'w50'),
-	'sql'                     => "char(1) NOT NULL default '1'"
+	'sql'                     => "char(1) NOT NULL default ''"
 );
 
 class sw_user extends tl_user {
