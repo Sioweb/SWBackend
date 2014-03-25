@@ -11,3 +11,4 @@
 */
 
 $GLOBALS['TL_LANG']['tl_user']['doNotUseTheme'] = array('Sioweb-Backend ohne Theme nutzen','Viele Funktionen des Sioweb-Backends werden freigeschaltet, das Theme bleibt deaktiviert.');
+$GLOBALS['TL_LANG']['tl_user']['useDragNDropUploader'] = array('Drag & Drop File-Upload','Bilder können per Drag&Drop hochgeladen werden.');

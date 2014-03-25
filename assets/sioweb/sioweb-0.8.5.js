@@ -9,7 +9,7 @@
 * Engine like Sizzle - but maybe in for future?! 
 */
 
-(function(window){
+(function(window, contao){
 var document = window.document,
 	sioweb = (function(){
 
@@ -67,29 +67,6 @@ var document = window.document,
 			
 			return base;
 		};
-
-		sioweb.merge({
-			initialize: function(){
-				var scripts = document.getElementsByTagName('script');
-				this.each(scripts, function(index, script){
-					/**/
-					if(typeof script.src != 'undefined' && script.src.match(/\?sioweb=true/i))
-					{
-						var params = script.src.split('?')[1];
-						if(typeof params != 'undefined')
-						{
-							var paramGroups = params.split('&');
-							for(var i = 0;i < paramGroups.length;i++)
-							{
-								var paramGroup = paramGroups[i].split('=');
-								sioweb[paramGroup[0]] = paramGroup[1];
-							}
-						}
-					}
-					/**/
-				});
-			}
-		});
 
 		sioweb.merge({
 			each: function( container, callback ){
@@ -243,6 +220,7 @@ var document = window.document,
 						method: settings.method||'post',
 						data: settings.data||null,
 						smth: settings.smth||true,
+						setAjaxHeader: settings.setAjaxHeader||true,
 						contentMimeType: settings.contentMimeType||null,
 						error: settings.error||function(msg){},
 						success: settings.success||function(msg){},
@@ -256,11 +234,11 @@ var document = window.document,
 					},settings);
 
 					this.success = function(msg){
-						settings.success(msg);
+						settings.success(msg,settings);
 					};
 
 					this.error = function(msg){
-						settings.error(msg);
+						settings.error(msg,settings);
 					};
 
 					this.onsending = function(){
@@ -280,7 +258,10 @@ var document = window.document,
 					this.send = function(){
 						if(settings.contentMimeType !== null)
 							selfObj.xhr.setRequestHeader("Content-Type", settings.contentMimeType);
-						selfObj.xhr.setRequestHeader("X_REQUESTED_WITH", "XMLHttpRequest");
+						if(settings.setAjaxHeader)
+							selfObj.xhr.setRequestHeader("X_REQUESTED_WITH", "XMLHttpRequest");
+						else
+							selfObj.xhr.setRequestHeader("X_REQUESTED_WITH", null);
 						
 						selfObj.xhr.send(settings.data);
 					};
@@ -299,14 +280,16 @@ var document = window.document,
 					std_event = function(e){
 						e.stopPropagation();
 						e.preventDefault();
-					};
+					},
+					selfObj = this;
 
 				if(!settings)
 					settings = {};
 
 				settings = this.merge({
 					url: settings.url||'',
-					data: settings.data||{}
+					data: settings.data||{},
+					beforeSend: settings.beforeSend||function(){}
 				},settings);
 
 				events = this.merge({
@@ -324,9 +307,18 @@ var document = window.document,
 						if(typeof e.dataTransfer != 'undefined')
 							files = e.dataTransfer.files;
 
+						settings.beforeSend(selfObj['0'],files);
+
 						sioweb(this).removeClass('sw_drag_over');
 						
-						sioweb.sendFiles(files,settings);
+						Backend.openModalFolderSelector({
+							id: 'multiSRC',
+							width: 765,
+							upload_callback: function(path){
+								sioweb.sendFiles(files,selfObj.merge(settings,{path: path}),selfObj);
+							},
+							url: 'contao/file.php?do=article&table=tl_content&field=uploadSRC&act=show&rt=' + contao.request_token
+						});
 					}
 				},events);
 
@@ -338,23 +330,28 @@ var document = window.document,
 				});
 			},
 			sendFiles: function(files,settings){
-				var form = this.FormData();
+				var form = this.FormData(),
+					selfObj = arguments[2]||null,
+					selfItems = selfObj['0'];
 
 				if(settings.data)
-					sioweb.each(settings.data,function(index, value){
+					selfObj.each(settings.data,function(index, value){
 						form.append(index, value);
 					});
 
 				for (var i = 0; i < files.length; i++)
-					form.append('fileselect[]', files[i]);
+					form.append('files[]', files[i]);
 
-				form.append('REQUEST_TOKEN',sioweb.request_token);
+				form.append('REQUEST_TOKEN',contao.request_token);
 
-				this.ajax({
+				this.ajax(selfObj.merge(settings,{
+					items: selfItems,
+					files: files,
+					setAjaxHeader: false,
 					contentMimeType: form.contentMimeType||null,
-					url: settings.url,
+					url: 'contao/main.php?do=files&act=move&mode=2&pid='+settings.path+'&id=&rt=' + contao.request_token,
 					data: form
-				});
+				}));
 			},
 			FormData: function(){
 				if(typeof window.FormData != 'undefined')
@@ -398,5 +395,4 @@ var document = window.document,
 	})();
 	/* Make'em Global :) but not with this damn $ (use $s) */
 	window.$s = window.sioweb = sioweb;
-	sioweb.initialize();
-})(window);
+})(window, Contao);

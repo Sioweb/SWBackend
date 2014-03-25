@@ -313,9 +313,27 @@ class Backend extends \Contao\Backend
 		return null;
 	}
 
-	public function dragNdropUpload($strAction,DataContainer $dc)
+	public function dragNdropUpload($arrUploaded)
 	{
-		echo '<pre>'.print_r($_FILES,1).'</pre>';
+		$arrPath = array();
+		foreach($arrUploaded as $fKey => $file)
+		{
+			$file = pathinfo($file);
+			$arrPath[] = $file['dirname'].'/'.$file['basename'];
+		}
+		$fileObj = \FilesModel::findMultipleByPaths($arrPath);
+		if($fileObj)
+		{
+			$arrFiles = array();
+			while($fileObj->next())
+			{
+				$objFile = new \File($fileObj->path, true);
+				$Image = \Image::getHtml(\Image::get($fileObj->path, 80, 60, 'center_center'), '', 'class="gimage"');
+				$fileObj->uuid = \String::binToUuid($fileObj->uuid);
+				$fileObj->img = $Image;
+			}
+			echo json_encode($fileObj->fetchAll());
+		}
 	}
 
 	public function extendFileTree($strName)
@@ -376,17 +394,19 @@ class Backend extends \Contao\Backend
 								if($oKey == 'show')
 									continue;
 								
-								$arrModules[$tKey]['modules'][$mKey]['tl_buttons'][$Theme->id]['buttons'][] = array(
-									'title'=>$Theme->title,
-									'label'=>$Theme->title,
-									'icon'=>$this->generateIcon($Theme->row(), 'tl_theme',$oKey),
-									'class'=>$oKey,
-									'href'=>($operation['href'] ? $this->addToUrl('do='.$mKey.'&amp;'.$operation['href'].'&amp;id='.$Theme->id.
-										(strpos($operation['href'],'act=') === false ? '&amp;act=&amp;' : '' ) .
-										(strpos($operation['href'],'table=') === false ? '&amp;table=' : '' ) .
-										(strpos($operation['href'],'use=') === false ? '&amp;use=' : '' )) 
-										: $this->addToUrl('do='.$mKey.'&amp;act='.$oKey.'&amp;id='.$Theme->id))
-								);
+								if(!\BackendUser::getInstance()->doNotUseTheme && !$GLOBALS['TL_CONFIG']['doNotUseTheme'])
+									$arrModules[$tKey]['modules'][$mKey]['tl_buttons'][$Theme->id]['buttons'][] = array(
+										'title'=>$Theme->title,
+										'label'=>$Theme->title,
+										'class'=>$oKey,
+										'href'=>($operation['href'] ? $this->addToUrl('do='.$mKey.'&amp;'.$operation['href'].'&amp;id='.$Theme->id.
+											(strpos($operation['href'],'act=') === false ? '&amp;act=&amp;' : '' ) .
+											(strpos($operation['href'],'table=') === false ? '&amp;table=' : '' ) .
+											(strpos($operation['href'],'use=') === false ? '&amp;use=' : '' )) 
+											: $this->addToUrl('do='.$mKey.'&amp;act='.$oKey.'&amp;id='.$Theme->id))
+									);
+								else
+									$arrModules[$tKey]['modules'][$mKey]['tl_buttons'][$Theme->id]['buttons'][] = $this->generateIcon($Theme->row(), 'tl_theme', $mKey, $oKey);
 							}
 						}
 					}
@@ -419,7 +439,7 @@ class Backend extends \Contao\Backend
 	 * @param integer
 	 * @return string
 	 */
-	protected function generateIcon($arrRow, $strTable, $act)
+	protected function generateIcon($arrRow, $strTable, $do, $act)
 	{
 		if(!$act)
 			return '';
@@ -438,24 +458,31 @@ class Backend extends \Contao\Backend
 		else
 			$attributes = ' class="' . $act . '"' . $attributes;
 
+
+		$v['href'] = ($v['href'] ? 'do='.$do.'&amp;'.$v['href'].'&amp;id='.$arrRow['id'].
+			(strpos($v['href'],'act=') === false ? '&amp;act=' : '' ) .
+			(strpos($v['href'],'table=') === false ? '&amp;table=' : '' ) .
+			(strpos($v['href'],'use=') === false ? '&amp;use=' : '' )
+			: 'do='.$de.'&amp;act='.$act.'&amp;id='.$arrRow['id']);
+
 		// Call a custom function instead of using the default button
 		if (is_array($v['button_callback']))
 		{
 			$this->import($v['button_callback'][0]);
+
 			return trim($this->$v['button_callback'][0]->$v['button_callback'][1]($arrRow, $v['href'], $label, $title, $v['icon'], $attributes, $strTable));
 		}
 		elseif (is_callable($v['button_callback']))
 		{
-			echo $v['button_callback'];
-			return trim($v['button_callback']($arrRow, $v['href'], $label, $title, $v['icon'], $attributes, $strTable));
+			return trim($v['button_callback']($arrRow, 'do='.$do.'&amp;'.$v['href'], $label, $title, $v['icon'], $attributes, $strTable));
 		}
 
 		if ($k != 'move' && $v != 'move')
 		{
 			if ($k == 'show')
-				return trim('<a href="'.$this->addToUrl($v['href'].'&amp;id='.$arrRow['id'].'&amp;popup=1').'" title="'.specialchars($title).'" onclick="Backend.openModalIframe({\'width\':765,\'title\':\''.specialchars(str_replace("'", "\\'", sprintf($GLOBALS['TL_LANG'][$strTable]['show'][1], $arrRow['id']))).'\',\'url\':this.href});return false"'.$attributes.'>'.\Image::getHtml($v['icon'], $label).'</a> ');
+				return trim('<a href="'.$this->addToUrl($v['href'].'&amp;popup=1',1).'" title="'.specialchars($title).'" onclick="Backend.openModalIframe({\'width\':765,\'title\':\''.specialchars(str_replace("'", "\\'", sprintf($GLOBALS['TL_LANG'][$strTable]['show'][1], $arrRow['id']))).'\',\'url\':this.href});return false"'.$attributes.'>'.\Image::getHtml($v['icon'], $label).'</a> ');
 			else
-				return trim('<a href="'.$this->addToUrl($v['href'].'&amp;id='.$arrRow['id']).'" title="'.specialchars($title).'"'.$attributes.'>'.\Image::getHtml($v['icon'], $label).'</a>');
+				return trim('<a href="'.$this->addToUrl($v['href'],1).'" title="'.specialchars($title).'"'.$attributes.'>'.\Image::getHtml($v['icon'], $label).'</a>');
 		}
 	}
 }

@@ -30,6 +30,7 @@ class SWBackend extends \Controller
 			'Backend'												=> 'system/modules/SWBackend/classes/Backend.php',
 			'sioweb\contao\extensions\backend\DC_Table'				=> 'system/modules/SWBackend/drivers/DC_Table.php',
 			'sioweb\contao\extensions\backend\DC_Folder'			=> 'system/modules/SWBackend/drivers/DC_Folder.php',
+
 		));
 
 		if(!\BackendUser::getInstance()->doNotUseTheme && !$GLOBALS['TL_CONFIG']['doNotUseTheme'])
@@ -45,6 +46,14 @@ class SWBackend extends \Controller
 				'be_main'			=> 'system/modules/SWBackend/templates/noTheme/backend',
 			));
 			$GLOBALS['TL_CSS'][] = 'system/modules/SWBackend/assets/main.css';
+		}
+
+		if(\BackendUser::getInstance()->useDragNDropUploader)
+		{
+			\ClassLoader::addClasses(array(
+				// Widgets
+				'FileTree'												=> 'system/modules/SWBackend/widgets/FileTree.php'
+			));
 		}
 
 		if($GLOBALS['TL_CONFIG']['navigation_signet'])
@@ -76,12 +85,15 @@ class SWBackend extends \Controller
 		$GLOBALS['TL_HOOKS']['getUserNavigation'][] = array('Backend', 'changeNavigation');
 		$GLOBALS['TL_HOOKS']['loadDataContainer'][] = array('Backend', 'extendFileTree');
 
-		$GLOBALS['TL_JAVASCRIPT'][] = 'assets/sioweb/sioweb.min.js?sioweb=true&amp;request_token='.$_SESSION['REQUEST_TOKEN'];
+		$GLOBALS['TL_JAVASCRIPT'][] = 'system/modules/SWBackend/assets/core.js';
+		$GLOBALS['TL_JAVASCRIPT'][] = 'assets/sioweb/sioweb-0.8.5.js';
 		$GLOBALS['TL_JAVASCRIPT'][] = 'system/modules/SWBackend/assets/sioweb.js';
 		$GLOBALS['TL_CSS'][] = 'system/modules/SWBackend/assets/sioweb.css';
 
-		if(\Input::post('action') == 'dragNdrop')
-			$GLOBALS['TL_HOOKS']['executePostActions'][] = array('Backend','dragNdropUpload');
+		if(\Input::post('FORM_SUBMIT') === 'tl_upload' && \Input::post('isAjaxRequest') === '1')
+		{
+			$GLOBALS['TL_HOOKS']['postUpload'][] = array('Backend','dragNdropUpload');
+		}
 		/* !config.php */
 
 	}

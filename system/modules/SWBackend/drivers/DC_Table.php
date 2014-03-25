@@ -400,6 +400,7 @@ class DC_Table extends \Contao\DC_Table
 				}
 			}
 
+			if(\Input::get('act') != 'select' && \Input::get('popup') !== '1')
 			$return .= '
 
 <div class="tl_formbody_submit" style="text-align:right">
@@ -412,8 +413,9 @@ class DC_Table extends \Contao\DC_Table
   <input type="submit" name="edit" id="edit" class="tl_submit" accesskey="s" value="'.specialchars($GLOBALS['TL_LANG']['MSC']['editSelected']).'"> ' : '') . $callbacks . '
 </div>
 
-</div>
-</div>
+</div>';
+
+$return .= '</div>
 </form>';
 		}
 
@@ -1166,15 +1168,12 @@ class DC_Table extends \Contao\DC_Table
 				}
 			}
 
-			$return .= '
+			$return .= '<div class="tl_formbody_submit" style="text-align:right">';
 
-<div class="tl_formbody_submit" style="text-align:right">
+if(\Input::get('act') != 'select' && \Input::get('popup') !== '1')
+	$return .= '<div class="tl_submit_container">' . implode(' ', $arrButtons) . '</div>';
 
-<div class="tl_submit_container">
-  ' . implode(' ', $arrButtons) . '
-</div>
-
-</div>
+$return .= '</div>
 </div>
 </form>';
 		}

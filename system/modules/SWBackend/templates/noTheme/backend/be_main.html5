@@ -106,9 +106,7 @@
                     <li class="tl_buttons">
                       <div class="buttons">
                         <?php foreach($icons['buttons'] as $iKey => $icon):?>
-                        <a href="<?php echo $icon['href'];?>" class="<?php echo $icon['class'];?>" title="<?php echo $icon['title'];?>"<?php echo $icon['attributes'];?>>
-                          <?php echo ($icon['icon'] ? $icon['icon'] : '&nbsp;');?>
-                        </a>
+                          <?php echo $icon;?>
                         <?php endforeach;?>
                       </div>
                       <span><?php echo $icons['theme']['title'];?></span>

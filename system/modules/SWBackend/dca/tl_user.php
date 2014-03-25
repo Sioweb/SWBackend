@@ -15,7 +15,7 @@
 $GLOBALS['TL_DCA']['tl_user']['list']['operations']['su']['button_callback'][0] = 'sw_user';
 
 foreach($GLOBALS['TL_DCA']['tl_user']['palettes'] as $pKey => &$palette)
-	$palette = str_replace('backendTheme','backendTheme,doNotUseTheme',$palette);
+	$palette = str_replace('backendTheme','backendTheme,doNotUseTheme,useDragNDropUploader',$palette);
 
 $GLOBALS['TL_DCA']['tl_user']['fields']['doNotUseTheme'] = array(
 	'label'                   => &$GLOBALS['TL_LANG']['tl_user']['doNotUseTheme'],
@@ -24,6 +24,14 @@ $GLOBALS['TL_DCA']['tl_user']['fields']['doNotUseTheme'] = array(
 	'inputType'               => 'checkbox',
 	'eval'                    => array('tl_class'=>'w50'),
 	'sql'                     => "char(1) NOT NULL default ''"
+
+);$GLOBALS['TL_DCA']['tl_user']['fields']['useDragNDropUploader'] = array(
+	'label'                   => &$GLOBALS['TL_LANG']['tl_user']['useDragNDropUploader'],
+	'default'                 => 1,
+	'exclude'                 => true,
+	'inputType'               => 'checkbox',
+	'eval'                    => array('tl_class'=>'w50'),
+	'sql'                     => "char(1) NOT NULL default '1'"
 );
 
 class sw_user extends tl_user {
