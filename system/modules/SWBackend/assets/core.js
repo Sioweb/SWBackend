@@ -4,6 +4,115 @@ String.implement({
 	}
 });
 
+Backend.siowebOptionsWizard = function(item,mode,id){
+	var tl_right = item.getParent(),
+		row = tl_right.getParent();
+
+	switch(mode)
+	{
+		case 'delete':
+			row.destroy();
+			break;
+		case 'add':
+			row = item.getParent().getPrevious();
+			Backend.openModalOptionsWizard({title: 'Filemanager', url: 'contao/main.php?do=files&amp;key=createField&amp;mode=add&amp;id=newLabel&amp;popup=1&amp;rt='+Contao.request_token,width:640,upload_callback: function(frm){
+				var val = [],
+					inp = frm.document.getElementById('fileManager').getElementsByTagName('input'),
+					newRow = row.clone(true),
+					mode = row.getChildren('label').get('for')[0].replace(/ctrl_(.+?)(?![0-9]+)_([0-9])+/g,'$1_$2').split('_'),
+					label = newRow.getChildren('label'),
+					input = newRow.getChildren('input').set('id','ctrl_'+mode[0]+'_'+mode[1]);
+
+				Backend.addModalOptionsWizard(inp,label,input,mode[0]);
+				newRow.inject(row,'after');
+			}});
+			break;
+	}
+};
+
+Backend.addModalOptionsWizard = function(inp,label,input,mode){
+	var val = [],
+		inpText = null;
+
+	for(var i=0;i<inp.length;i++)
+	{
+		if(inp[i].name == 'newLabel') inpText = inp[i];
+		if (inp[i].type!="radio" || !inp[i].checked || inp[i].id.match(/^check_all_/)) continue;
+		if (!inp[i].id.match(/^reset_/)) val.push(inp[i].get('value'));
+	}
+
+	if(val[0])
+	{
+		if(val[0] == 'newLabel')
+			val[0] = inpText.value.replace(/[^a-zA-Z0-9]+/g,'');
+		if(!val[0])
+			return;
+
+		if(typeof Sioweb.lang['aw_'+val[0]] !== 'undefined')
+			label.set('text',Sioweb.lang['aw_'+val[0]]);
+		else if(typeof Sioweb.lang[val[0]] !== 'undefined')
+			label.set('text',Sioweb.lang[val[0]]);
+		else
+			label.set('text',val[0]);
+
+		label[0].removeAttribute('onclick');
+		label.set('for', label.get('for')[0].replace('_'+mode+'_','_'+val[0]+'_'));
+		label.removeEvent('click').addEvent('click',function(){
+			Backend.changeOptionWizardField(this,val[0]);
+		});
+		input.set('name', input.get('name')[0].replace('['+mode+']','['+val[0]+']'));
+		input.set('id', input.get('id')[0].replace('_'+mode+'_','_'+val[0]+'_'));
+	}
+};
+
+Backend.changeOptionWizardField = function(item, mode) {
+	var parent = item.getParent(),
+		label = parent.getChildren('label'),
+		input = parent.getChildren('input');
+
+	Backend.openModalOptionsWizard({
+		title: 'Filemanager', url: 'contao/main.php?do=files&amp;key=createField&amp;mode=change&amp;id='+mode+'&amp;popup=1&amp;rt='+Contao.request_token,width:640,upload_callback: function(frm){
+			var val = [],
+				inpText = null,
+				inp = frm.document.getElementById('fileManager').getElementsByTagName('input');
+			
+			Backend.addModalOptionsWizard(inp,label,input);
+		}
+	});
+};
+
+Backend.openModalOptionsWizard = function(options){
+	var opt = options || {},
+		max = (window.getSize().y-180).toInt();
+	if (!opt.height || opt.height > max) opt.height = max;
+	var M = new SimpleModal({
+		'width': opt.width,
+		'btn_ok': Contao.lang.close,
+		'draggable': false,
+		'overlayOpacity': .5,
+		'onShow': function() { document.body.setStyle('overflow', 'hidden'); },
+		'onHide': function() { document.body.setStyle('overflow', 'auto'); }
+	});
+	M.addButton(Contao.lang.close, 'btn', function() {
+		this.hide();
+	});
+	M.addButton(Contao.lang.apply, 'btn primary', function() {
+		var frms = window.frames;
+		for (i=0; i<frms.length; i++) {
+			if (frms[i].name == 'simple-modal-iframe') {
+				options.upload_callback(frms[i]);
+				break;
+			}
+		}
+		this.hide();
+	});
+	M.show({
+		'title': opt.title,
+		'contents': '<iframe src="' + opt.url + '" name="simple-modal-iframe" width="100%" height="' + opt.height + '" frameborder="0"></iframe>',
+		'model': 'modal'
+	});
+};
+
 Backend.removeMultiSrcThumbnails = function(item, id, oid) {
 	var parent = item.getParent('li'),
 		uuid = parent.get('data-id'),

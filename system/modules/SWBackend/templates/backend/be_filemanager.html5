@@ -1,0 +1,21 @@
+<div class="be_filemanager">
+	<ul class="tl_listing tree_view picker_selector" id="fileManager">
+		<?php if($this->field != 'newLabel'):?>
+		<?php foreach($this->fields as $fKey => $field):?>
+		<li class="tl_file" onmouseover="Theme.hoverDiv(this, 1)" onmouseout="Theme.hoverDiv(this, 0)" onclick="Theme.toggleSelect(this)">
+			<div class="tl_left"><?php echo $GLOBALS['TL_LANG']['Sioweb'][$fKey] ? $GLOBALS['TL_LANG']['Sioweb'][$fKey].' ('.$fKey.')' : $fKey;?></div>
+			<div class="tl_right"><input<?php if($this->field == $fKey):?> checked="checked"<?php endif;?> type="radio" name="fileManager" id="fileManager-<?php echo $fKey;?>" value="<?php echo $fKey;?>"></div>
+			<div style="clear:both"></div>
+		</li>
+		<?php endforeach;?>
+		<?php endif;?>
+		<li class="tl_file" onmouseover="Theme.hoverDiv(this, 1)" onmouseout="Theme.hoverDiv(this, 0)" onclick="Theme.toggleSelect(this)">
+			<div class="tl_left">
+				<span>Neu:</span>
+				<input type="text" onclick="$('fileManager-newLabel').checked = 'checked';" name="newLabel" id="newLabel">
+			</div>
+			<div class="tl_right"><input<?php if($this->field == 'newLabel'):?> checked="checked"<?php endif;?> type="radio" name="fileManager" id="fileManager-newLabel" value="newLabel"></div>
+			<div style="clear:both"></div>
+		</li>
+	</ul>
+</div>

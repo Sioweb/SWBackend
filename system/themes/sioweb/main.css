@@ -21,6 +21,10 @@ body.popup {
 	padding:6px 0;
 }
 
+.meta_rows .add {
+	cursor: pointer;
+}
+
 td {
 	vertical-align: top;
 }
@@ -1610,6 +1614,7 @@ a.navigation,
 .tl_info:before,
 .cte_type:before,
 #tl_buttons a:before,
+.meta_rows .add:before,
 .header_buttons a:before,
 .tl_right a:before,
 .tl_right_nowrap a:before,
@@ -1757,6 +1762,7 @@ a.navigation.repository_manager:before {
 	content: "\f040";
 	color: #DEC34E;
 }
+.meta_rows .add:before,
 #tl_navigation a.copy:before,
 .tl_right .copy:before,
 .tl_right_nowrap .copy:before,

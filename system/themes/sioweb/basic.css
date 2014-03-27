@@ -46,6 +46,9 @@ h1,h2,h3,h4,h5,h6 {
 h1 {
 	height: 18px;
 }
+.simple-modal h1 {
+	height: auto;
+}
 .chzn-container-single .chzn-single {
 	height: 23px;
 	line-height: 23px;

@@ -14,6 +14,17 @@
 class Backend extends \Contao\Backend
 {
 
+	public function loadTlFiles($strName)
+	{
+		if($strName == 'tl_files')
+		{
+			if(is_array($GLOBALS['TL_DCA']['tl_files']['fields']['meta']['save_callback']))
+				$GLOBALS['TL_DCA']['tl_files']['fields']['meta']['save_callback'][] = array('sw_files','saveMeta');
+			else
+				$GLOBALS['TL_DCA']['tl_files']['fields']['meta']['save_callback'] = array(array('sw_files','saveMeta'));
+		}
+	}
+
 	/**
 	 * Open a back end module and return it as HTML
 	 * @param string
@@ -399,6 +410,7 @@ class Backend extends \Contao\Backend
 									$arrModules[$tKey]['modules'][$mKey]['tl_buttons'][$Theme->id]['buttons'][] = array(
 										'title'=>$Theme->title,
 										'label'=>$Theme->title,
+										'attributes'=>($oKey!='delete' ? '' : ' onclick="return confirm(\'Theme '.$Theme->name.' wirklich löschen?\')"'),
 										'class'=>$oKey,
 										'href'=>($operation['href'] ? $this->addToUrl('do='.$mKey.'&amp;'.$operation['href'].'&amp;id='.$Theme->id.
 											(strpos($operation['href'],'act=') === false ? '&amp;act=&amp;' : '' ) .

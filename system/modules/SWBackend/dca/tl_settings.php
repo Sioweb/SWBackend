@@ -17,7 +17,7 @@
 $semicolon = substr($GLOBALS['TL_DCA']['tl_settings']['palettes']['default'], -1, 1);
 if($semicolon != ';')
 	$semicolon = ';';
-$GLOBALS['TL_DCA']['tl_settings']['palettes']['default'] = $GLOBALS['TL_DCA']['tl_settings']['palettes']['default'].$semicolon.'{sioweb_theme_settings},useSiowebTheme,doNotUseTheme,navigation_signet';
+$GLOBALS['TL_DCA']['tl_settings']['palettes']['default'] = $GLOBALS['TL_DCA']['tl_settings']['palettes']['default'].$semicolon.'{sioweb_theme_settings},useSiowebTheme,doNotUseTheme,navigation_signet,siowebFilemanager';
 
 $GLOBALS['TL_DCA']['tl_settings']['fields']['useSiowebTheme'] = array
 (
@@ -43,4 +43,12 @@ $GLOBALS['TL_DCA']['tl_settings']['fields']['doNotUseTheme'] = array(
 	'inputType'               => 'checkbox',
 	'eval'                    => array('tl_class'=>'w50'),
 	'sql'                     => "char(1) NOT NULL default ''"
+);
+$GLOBALS['TL_DCA']['tl_settings']['fields']['siowebFilemanager'] = array(
+	'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['siowebFilemanager'],
+	'default'                 => 'title,link,caption',
+	'exclude'                 => true,
+	'inputType'               => 'text',
+	'eval'                    => array('tl_class'=>'w50','nospace'=>true),
+	'sql'                     => "text NULL"
 );
