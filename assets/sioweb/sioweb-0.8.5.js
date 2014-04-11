@@ -84,7 +84,6 @@ var document = window.document,
 					if(sioweb.is_int(index))
 					{
 						elem.addEventListener (event, func, false);
-						console.log(elem);
 					}
 				});
 			},
@@ -281,6 +280,7 @@ var document = window.document,
 						e.stopPropagation();
 						e.preventDefault();
 					},
+					dragCounter = 0,
 					selfObj = this;
 
 				if(!settings)
@@ -332,8 +332,6 @@ var document = window.document,
 				var form = this.FormData(),
 					selfObj = arguments[2]||null,
 					selfItems = selfObj['0'];
-
-				console.log();
 
 				if(settings.data)
 					selfObj.each(settings.data,function(index, value){

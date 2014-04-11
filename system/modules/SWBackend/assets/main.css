@@ -1,3 +1,7 @@
+.dragNdrop {
+	position: relative;
+}
+
 #tl_navigation figure {
 	width: 90%;
 	margin: 24px auto 10px;

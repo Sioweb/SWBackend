@@ -15,19 +15,34 @@
 $GLOBALS['TL_DCA']['tl_user']['list']['operations']['su']['button_callback'][0] = 'sw_user';
 
 foreach($GLOBALS['TL_DCA']['tl_user']['palettes'] as $pKey => &$palette)
-	$palette = str_replace('backendTheme','backendTheme,doNotUseTheme,useDragNDropUploader,useSiowebFilemanager',$palette);
+	$palette = str_replace('backendTheme','backendTheme,mergeSitesAndArticles,showSignetInNavi,useFastTheme,useDragNDropUploader,useSiowebFilemanager',$palette);
 
-$GLOBALS['TL_DCA']['tl_user']['fields']['doNotUseTheme'] = array(
-	'label'                   => &$GLOBALS['TL_LANG']['tl_user']['doNotUseTheme'],
+$GLOBALS['TL_DCA']['tl_user']['fields']['mergeSitesAndArticles'] = array(
+	'label'                   => &$GLOBALS['TL_LANG']['tl_user']['mergeSitesAndArticles'],
 	'default'                 => 1,
 	'exclude'                 => true,
 	'inputType'               => 'checkbox',
 	'eval'                    => array('tl_class'=>'w50'),
-	'sql'                     => "char(1) NOT NULL default ''"
+	'sql'                     => "char(1) NOT NULL default '1'"
 
 );
 $GLOBALS['TL_DCA']['tl_user']['fields']['useDragNDropUploader'] = array(
 	'label'                   => &$GLOBALS['TL_LANG']['tl_user']['useDragNDropUploader'],
+	'exclude'                 => true,
+	'inputType'               => 'checkbox',
+	'eval'                    => array('tl_class'=>'w50'),
+	'sql'                     => "char(1) NOT NULL default ''"
+);
+
+$GLOBALS['TL_DCA']['tl_user']['fields']['showSignetInNavi'] = array(
+	'label'                   => &$GLOBALS['TL_LANG']['tl_user']['showSignetInNavi'],
+	'exclude'                 => true,
+	'inputType'               => 'checkbox',
+	'eval'                    => array('tl_class'=>'w50'),
+	'sql'                     => "char(1) NOT NULL default ''"
+);
+$GLOBALS['TL_DCA']['tl_user']['fields']['useFastTheme'] = array(
+	'label'                   => &$GLOBALS['TL_LANG']['tl_user']['useFastTheme'],
 	'exclude'                 => true,
 	'inputType'               => 'checkbox',
 	'eval'                    => array('tl_class'=>'w50'),

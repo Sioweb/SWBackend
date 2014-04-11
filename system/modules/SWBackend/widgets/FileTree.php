@@ -190,6 +190,8 @@ class FileTree extends \Contao\FileTree
     <script>Backend.makeMultiSrcSortable("sort_'.$this->strId.'", "ctrl_'.$this->strOrderId.'")</script>' : '') . '
   </div>';
 
+		$return .= '<div class="droppable"></div>';
+
 		if (!\Environment::get('isAjaxRequest'))
 		{
 			$return = '<div>' . $return . '</div>';

@@ -1,5 +1,5 @@
 $s(document).ready(function(){
-	/**/
+	var dragged = null;
 	$s('.dragNdrop').uploadAjax({
 		success: function(msg,settings){
 			msg = JSON.decode(msg);
@@ -84,13 +84,13 @@ $s(document).ready(function(){
 			MAX_FILE_SIZE: 2048000
 		},
 		dragover: function(e){
+			var selfObj = this;
 			e.stopPropagation();
 			e.preventDefault();
+			clearTimeout(dragged);
 
-			$s(this).addClass('sw_drag_over');
-		},
-		dragleave: function(e){
-			$s(this).removeClass('sw_drag_over');
+			$s(selfObj).addClass('sw_drag_over');
+			dragged = setTimeout(function(){$s(selfObj).removeClass('sw_drag_over');},400);
 		}
 	});
 	/**/

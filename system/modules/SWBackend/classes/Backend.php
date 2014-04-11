@@ -405,8 +405,10 @@ class Backend extends \Contao\Backend
 							{
 								if($oKey == 'show')
 									continue;
+
+								$BackendUser = \BackendUser::getInstance();
 								
-								if(!\BackendUser::getInstance()->doNotUseTheme && !$GLOBALS['TL_CONFIG']['doNotUseTheme'])
+								if($BackendUser->backendTheme == 'sioweb')
 									$arrModules[$tKey]['modules'][$mKey]['tl_buttons'][$Theme->id]['buttons'][] = array(
 										'title'=>$Theme->title,
 										'label'=>$Theme->title,
@@ -419,7 +421,9 @@ class Backend extends \Contao\Backend
 											: $this->addToUrl('do='.$mKey.'&amp;act='.$oKey.'&amp;id='.$Theme->id))
 									);
 								else
+								{
 									$arrModules[$tKey]['modules'][$mKey]['tl_buttons'][$Theme->id]['buttons'][] = $this->generateIcon($Theme->row(), 'tl_theme', $mKey, $oKey);
+								}
 							}
 						}
 					}

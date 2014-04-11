@@ -28,8 +28,10 @@ class sw_files extends tl_files
 					$strDiff = implode(',',array_keys($arrKeys));
 				}
 
-				\Config::getInstance()->update('$GLOBALS[\'TL_CONFIG\'][\'siowebFilemanager\']',$strDiff);
-				$GLOBALS['TL_CONFIG']['siowebFilemanager'] = $arrKeys;
+				if($strDiff)
+					\Config::getInstance()->update('$GLOBALS[\'TL_CONFIG\'][\'siowebFilemanager\']',$strDiff);
+				if($arrKeys)
+					$GLOBALS['TL_CONFIG']['siowebFilemanager'] = $arrKeys;
 			}
 		return $strValue;
 	}

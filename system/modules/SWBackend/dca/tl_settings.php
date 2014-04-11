@@ -17,11 +17,11 @@
 $semicolon = substr($GLOBALS['TL_DCA']['tl_settings']['palettes']['default'], -1, 1);
 if($semicolon != ';')
 	$semicolon = ';';
-$GLOBALS['TL_DCA']['tl_settings']['palettes']['default'] = $GLOBALS['TL_DCA']['tl_settings']['palettes']['default'].$semicolon.'{sioweb_theme_settings},useSiowebTheme,doNotUseTheme,navigation_signet,siowebFilemanager';
+$GLOBALS['TL_DCA']['tl_settings']['palettes']['default'] = $GLOBALS['TL_DCA']['tl_settings']['palettes']['default'].$semicolon.'{sioweb_theme_settings},navigation_signet,showSignetForLogin,siowebFilemanager';
 
-$GLOBALS['TL_DCA']['tl_settings']['fields']['useSiowebTheme'] = array
+$GLOBALS['TL_DCA']['tl_settings']['fields']['showSignetForLogin'] = array
 (
-	'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['useSiowebTheme'],
+	'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['showSignetForLogin'],
 	'default'                 => 1,
 	'exclude'                 => true,
 	'inputType'               => 'checkbox',

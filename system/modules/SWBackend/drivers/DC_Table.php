@@ -63,7 +63,7 @@ class DC_Table extends \Contao\DC_Table
 	 */
 	protected function panel()
 	{
-		if($this->User->doNotUseTheme || $GLOBALS['TL_CONFIG']['doNotUseTheme'])
+		if($this->User->backendTheme != 'sioweb')
 			return parent::panel();
 		if ($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['panelLayout'] == '')
 		{

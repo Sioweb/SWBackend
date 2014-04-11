@@ -49,9 +49,9 @@ Backend.addModalOptionsWizard = function(inp,label,input,mode){
 			return;
 
 		if(typeof Sioweb.lang['aw_'+val[0]] !== 'undefined')
-			label.set('text',Sioweb.lang['aw_'+val[0]]);
+			label.set('text',Sioweb.lang['aw_'+val[0]]+' ('+val[0]+')');
 		else if(typeof Sioweb.lang[val[0]] !== 'undefined')
-			label.set('text',Sioweb.lang[val[0]]);
+			label.set('text',Sioweb.lang[val[0]]+' ('+val[0]+')');
 		else
 			label.set('text',val[0]);
 

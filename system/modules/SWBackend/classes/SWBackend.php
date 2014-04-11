@@ -16,83 +16,105 @@ use Contao;
 
 class SWBackend extends Sioweb
 {
+	protected $BackendUser = false;
+	protected $isSiowebTheme = false;
+
 	public function sw_initialize()
 	{
 		$this->getBackendUser();
-		if((\BackendUser::getInstance()->id && \BackendUser::getInstance()->backendTheme != 'sioweb' && !\BackendUser::getInstance()->doNotUseTheme) || (!\BackendUser::getInstance()->id && !$GLOBALS['TL_CONFIG']['useSiowebTheme']))
-			return;
+		$this->BackendUser = \BackendUser::getInstance();
+		#if((\BackendUser::getInstance()->id && \BackendUser::getInstance()->backendTheme != 'sioweb' && !\BackendUser::getInstance()->doNotUseTheme) || (!\BackendUser::getInstance()->id && !$GLOBALS['TL_CONFIG']['useSiowebTheme']))
+		#	return;
+		$this->isSiowebTheme = ($this->BackendUser->backendTheme == 'sioweb');
 
-		if(\Input::get('do') != 'settings')
+		$this->loadBasics();
+
+		if($this->BackendUser->mergeSitesAndArticles)
+			$this->mergeSitesAndArticles();
+
+		if($this->BackendUser->showSignetInNavi || $GLOBALS['TL_CONFIG']['showSignetForLogin'])
+			$this->loadSignet();
+
+		if($this->BackendUser->useFastTheme)
+			$GLOBALS['TL_HOOKS']['getUserNavigation'][] = array('Backend', 'changeNavigation');
+
+		if($this->BackendUser->useSiowebFilemanager && \Input::get('do') != 'settings')
+		{
 			$this->fileManagerSettings();
+			$this->useFilemanager();
+		}
 
+		if($this->BackendUser->useDragNDropUploader && \Input::get('do') != 'settings')
+			$this->loadDragNDropUploader();
+	}
+
+	private function loadBasics()
+	{
 		define('TL_FILES_URL','');
 		define('TL_ASSETS_URL','');
 
 		\ClassLoader::addClasses(array(
 			// Classes
-			'Backend'												=> 'system/modules/SWBackend/classes/Backend.php',
-			'sioweb\contao\extensions\backend\DC_Table'				=> 'system/modules/SWBackend/drivers/DC_Table.php',
-			'sioweb\contao\extensions\backend\DC_Folder'			=> 'system/modules/SWBackend/drivers/DC_Folder.php',
-
+			'Backend' => 'system/modules/SWBackend/classes/Backend.php',
 		));
 
-		if(!\BackendUser::getInstance()->doNotUseTheme && !$GLOBALS['TL_CONFIG']['doNotUseTheme'])
-		{
-			$this->doNotUseTheme();
-		}
-		else
+		\TemplateLoader::addFiles(array(
+			'be_login'			=> 'system/modules/SWBackend/templates/backend',
+			'be_maintenance'	=> 'system/modules/SWBackend/templates/backend',
+			'dc_article'		=> 'system/modules/SWBackend/templates/drivers',
+		));
+		if(
+			(
+				$this->BackendUser->showSignetInNavi ||
+				$this->BackendUser->useFastTheme ||
+				$this->BackendUser->useDragNDropUploader
+			) && !$this->isSiowebTheme
+		)
 		{
 			\TemplateLoader::addFiles(array(
 				'be_main'			=> 'system/modules/SWBackend/templates/noTheme/backend',
 			));
 			$GLOBALS['TL_CSS'][] = 'system/modules/SWBackend/assets/main.css';
 		}
-
-		$this->loadSignet();
-
-		/* Config.php */
-		$GLOBALS['BE_MOD']['content']['article']['tables'][] ='tl_page';
-		$GLOBALS['SWBackend']['fileTree'] = false;
-
-		if(!\BackendUser::getInstance()->doNotUseTheme && !$GLOBALS['TL_CONFIG']['doNotUseTheme'])
+		
+		if($this->isSiowebTheme)
 		{
-			$GLOBALS['TL_HOOKS']['getUserNavigation'][] = array('Backend', 'changeNavigation');
-			$GLOBALS['TL_HOOKS']['loadDataContainer'][] = array('Backend', 'extendFileTree');
+			\TemplateLoader::addFiles(array(
+				'be_main' => 'system/modules/SWBackend/templates/backend',
+			));
 		}
+
 		$GLOBALS['TL_JAVASCRIPT'][] = 'system/modules/SWBackend/assets/core.js';
 		$GLOBALS['TL_JAVASCRIPT'][] = 'assets/sioweb/sioweb-0.8.5.js';
-		if(\BackendUser::getInstance()->useDragNDropUploader != false)
-			$GLOBALS['TL_JAVASCRIPT'][] = 'system/modules/SWBackend/assets/dragAndDrop.js';
+
 		$GLOBALS['TL_CSS'][] = 'system/modules/SWBackend/assets/sioweb.css';
+	}
+
+	private function loadDragNDropUploader()
+	{
+		\ClassLoader::addClasses(array(
+			// Widgets
+			'FileTree' => 'system/modules/SWBackend/widgets/FileTree.php'
+		));
+		$GLOBALS['TL_HOOKS']['loadDataContainer'][] = array('Backend', 'extendFileTree');
+		$GLOBALS['TL_JAVASCRIPT'][] = 'system/modules/SWBackend/assets/dragAndDrop.js';
 
 		if(\Input::post('FORM_SUBMIT') === 'tl_upload' && \Input::post('isAjaxRequest') === '1')
 		{
 			$GLOBALS['TL_HOOKS']['postUpload'][] = array('Backend','dragNdropUpload');
 		}
-		/* !config.php */
-
 	}
 
-	private function doNotUseTheme()
+	private function mergeSitesAndArticles()
 	{
-		\TemplateLoader::addFiles(array(
-			'be_main'			=> 'system/modules/SWBackend/templates/backend',
-			'be_login'			=> 'system/modules/SWBackend/templates/backend',
-			'be_maintenance'	=> 'system/modules/SWBackend/templates/backend',
-			'dc_article'		=> 'system/modules/SWBackend/templates/drivers',
-		));
+		$GLOBALS['BE_MOD']['content']['article']['tables'][] ='tl_page';
+		$GLOBALS['SWBackend']['fileTree'] = false;
 
-		if(\BackendUser::getInstance()->useDragNDropUploader != false)
-		{
-			\ClassLoader::addClasses(array(
-				// Widgets
-				'FileTree' => 'system/modules/SWBackend/widgets/FileTree.php'
-			));
-		}
-		if(\BackendUser::getInstance()->useSiowebFilemanager != false)
-		{
-			$this->useFilemanager();
-		}
+		\ClassLoader::addClasses(array(
+			// Classes
+			'sioweb\contao\extensions\backend\DC_Table'				=> 'system/modules/SWBackend/drivers/DC_Table.php',
+			'sioweb\contao\extensions\backend\DC_Folder'			=> 'system/modules/SWBackend/drivers/DC_Folder.php',
+		));
 	}
 
 	protected function fileManagerSettings()
