@@ -35,8 +35,8 @@ class SWBackend extends Sioweb
 		if($this->BackendUser->showSignetInNavi || $GLOBALS['TL_CONFIG']['showSignetForLogin'])
 			$this->loadSignet();
 
-		if($this->BackendUser->useFastTheme)
-			$GLOBALS['TL_HOOKS']['getUserNavigation'][] = array('Backend', 'changeNavigation');
+		if($this->BackendUser->useDragNDropUploader && \Input::get('do') != 'settings')
+			$this->loadDragNDropUploader();
 
 		if($this->BackendUser->useSiowebFilemanager && \Input::get('do') != 'settings')
 		{
@@ -44,8 +44,8 @@ class SWBackend extends Sioweb
 			$this->useFilemanager();
 		}
 
-		if($this->BackendUser->useDragNDropUploader && \Input::get('do') != 'settings')
-			$this->loadDragNDropUploader();
+		if($this->BackendUser->useFastTheme)
+			$GLOBALS['TL_HOOKS']['getUserNavigation'][] = array('Sioweb', 'changeNavigation');
 	}
 
 	private function loadBasics()
@@ -96,7 +96,7 @@ class SWBackend extends Sioweb
 			// Widgets
 			'FileTree' => 'system/modules/SWBackend/widgets/FileTree.php'
 		));
-		$GLOBALS['TL_HOOKS']['loadDataContainer'][] = array('Backend', 'extendFileTree');
+		$GLOBALS['TL_HOOKS']['loadDataContainer'][] = array('Sioweb', 'extendFileTree');
 		$GLOBALS['TL_JAVASCRIPT'][] = 'system/modules/SWBackend/assets/dragAndDrop.js';
 
 		if(\Input::post('FORM_SUBMIT') === 'tl_upload' && \Input::post('isAjaxRequest') === '1')
@@ -150,7 +150,7 @@ class SWBackend extends Sioweb
 			'sioweb\contao\extensions\backend\FileManager' => 'system/modules/SWBackend/classes/FileManager.php',
 		));
 		
-		$GLOBALS['TL_HOOKS']['loadDataContainer'][] = array('Backend', 'loadTlFiles');
+		$GLOBALS['TL_HOOKS']['loadDataContainer'][] = array('Sioweb', 'loadTlFiles');
 
 		$GLOBALS['BE_MOD']['system']['files']['createField'] = array('FileManager', 'createField');
 	}
