@@ -24,12 +24,17 @@ class DC_Table extends \Contao\DC_Table
 	public function __construct($strTable, $arrModule=array())
 	{
 		$this->import('BackendUser','User');
-		// Die Tabelle wird manchmal überschrieben ... es ist 23.42 Uhr und es war irgendwas mit kopieren und deaktivieren...
-		$use = \Input::get('use');
-		if(\Input::get('table') == '' && $use != '' && $strTable != $use)
+
+
+		if(\Input::get('do') == 'article')
 		{
-			#$GLOBALS['TL_DCA'][$use]['list']['label']['format'] = $GLOBALS['TL_DCA'][$strTable]['list']['label']['format'];
-			$strTable = $use;
+			// Die Tabelle wird manchmal überschrieben ... es ist 23.42 Uhr und es war irgendwas mit kopieren und deaktivieren...
+			$use = \Input::get('use');
+			if(\Input::get('table') == '' && $use != '' && $strTable != $use)
+			{
+				#$GLOBALS['TL_DCA'][$use]['list']['label']['format'] = $GLOBALS['TL_DCA'][$strTable]['list']['label']['format'];
+				$strTable = $use;
+			}
 		}
 		parent::__construct($strTable, $arrModule);
 	}
@@ -187,6 +192,9 @@ class DC_Table extends \Contao\DC_Table
 	 */
 	protected function treeView()
 	{
+		if(\Input::get('do') != 'article')
+			return parent::treeView();
+
 		$table = $this->strTable;
 		$useTable = $this->strTable;
 		
@@ -440,6 +448,9 @@ $return .= '</div>
 	protected function generateTree($table, $id, $arrPrevNext, $blnHasSorting, $intMargin=0, $arrClipboard=null, $blnCircularReference=false, $protectedPage=false, $blnNoRecursion=false)
 	{
 		static $session;
+
+		if(\Input::get('do') != 'article')
+			return parent::generateTree($table, $id, $arrPrevNext, $blnHasSorting, $intMargin, $arrClipboard, $blnCircularReference, $protectedPage, $blnNoRecursion);
 
 		$session = $this->Session->getData();
 		$node = ($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['mode'] == 6) ? $this->strTable.'_'.$table.'_tree' : $this->strTable.'_tree';
@@ -709,6 +720,10 @@ $return .= '</div>
 	 */
 	protected function parentView()
 	{
+
+		if(\Input::get('do') != 'article')
+			return parent::parentView();
+
 		$blnClipboard = false;
 		$arrClipboard = $this->Session->get('CLIPBOARD');
 		$table = ($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['mode'] == 6) ? $this->ptable : $this->strTable;
@@ -1188,6 +1203,8 @@ $return .= '</div>
 	 */
 	public function showAll()
 	{
+		if(\Input::get('do') != 'article')
+			return parent::showAll();
 		$return = '';
 		$this->limit = '';
 		$this->bid = 'tl_buttons';
