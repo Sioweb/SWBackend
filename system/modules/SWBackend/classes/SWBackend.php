@@ -21,6 +21,8 @@ class SWBackend extends Sioweb
 
 	public function sw_initialize()
 	{
+		if(strpos(\Environment::get('phpSelf'),'install.php') !== false)
+			return;
 		$this->getBackendUser();
 		$this->BackendUser = \BackendUser::getInstance();
 		#if((\BackendUser::getInstance()->id && \BackendUser::getInstance()->backendTheme != 'sioweb' && !\BackendUser::getInstance()->doNotUseTheme) || (!\BackendUser::getInstance()->id && !$GLOBALS['TL_CONFIG']['useSiowebTheme']))
@@ -164,7 +166,7 @@ class SWBackend extends Sioweb
 	{
 		if($GLOBALS['TL_CONFIG']['navigation_signet'])
 		{
-			$File = \FilesModel::findBy('uuid',$GLOBALS['TL_CONFIG']['navigation_signet']);
+			$File = \FilesModel::findByUuid($GLOBALS['TL_CONFIG']['navigation_signet']);
 			if($File)
 			{
 				$arrImage = array(
