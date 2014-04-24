@@ -59,10 +59,15 @@ class SWBackend extends Sioweb
 		));
 
 		\TemplateLoader::addFiles(array(
-			'be_login'			=> 'system/modules/SWBackend/templates/backend',
 			'be_maintenance'	=> 'system/modules/SWBackend/templates/backend',
 			'dc_article'		=> 'system/modules/SWBackend/templates/drivers',
 		));
+
+		if($GLOBALS['TL_CONFIG']['useSiowebLoginTheme'])
+			\TemplateLoader::addFiles(array(
+				'be_login'			=> 'system/modules/SWBackend/templates/backend',
+			));
+
 		if(
 			(
 				$this->BackendUser->showSignetInNavi ||
