@@ -71,9 +71,7 @@ class DC_Table extends \Contao\DC_Table
 		if($this->User->backendTheme != 'sioweb')
 			return parent::panel();
 		if ($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['panelLayout'] == '')
-		{
 			return '';
-		}
 
 		$intFilterPanel = 0;
 		$arrPanels = array();
@@ -117,65 +115,41 @@ class DC_Table extends \Contao\DC_Table
 
 				// Add the panel if it is not empty
 				if ($panel != '')
-				{
 					$panels = $panel . $panels;
-				}
 			}
 
 			// Add the group if it is not empty
 			if ($panels != '')
-			{
 				$arrPanels[] = $panels;
-			}
 		}
 
 		if (empty($arrPanels))
-		{
 			return '';
-		}
 
 		if (\Input::post('FORM_SUBMIT') == 'tl_filters')
-		{
 			$this->reload();
-		}
 
-		$return = '';
 		$intTotal = count($arrPanels);
 		$intLast = $intTotal - 1;
 
-		for ($i=0; $i<$intTotal; $i++)
-		{
+		$Panel = new \BackendTemplate('be_panel');
+		$Panel->request_token = REQUEST_TOKEN;
+		$Panel->table = $this->strTable;
+		$Panel->action = ampersand(\Environment::get('request'), true);
+
+		$arrFilters = array();
+		for ($i=0; $i<$intTotal; $i++){
 			$submit = '';
 
+			$Filter = new \BackendTemplate('be_panel_default');
+			$Filter->theme = \Backend::getTheme();
 			if ($i == $intLast)
-			{
-				$submit = '
-
-<div class="tl_submit_panel tl_subpanel">
-<input type="image" name="filter" id="filter" src="' . TL_FILES_URL . 'system/themes/' . \Backend::getTheme() . '/images/reload.gif" class="tl_img_submit" title="' . specialchars($GLOBALS['TL_LANG']['MSC']['applyTitle']) . '" alt="' . specialchars($GLOBALS['TL_LANG']['MSC']['apply']) . '">
-</div>';
-			}
-
-			$return .= '
-<div class="tl_panel">' . $submit . $arrPanels[$i] . '
-
-<div class="clear"></div>
-
-</div>';
+				$Filter->intLast = true;
+			$Filter->panel = $arrPanels[$i];
+			$arrFilters[] = $Filter->parse();
 		}
-
-		$return = '
-<form action="'.ampersand(\Environment::get('request'), true).'" class="tl_form sw_'.$this->strTable.'" method="post">
-<div class="tl_formbody">
-<input type="hidden" name="FORM_SUBMIT" value="tl_filters">
-<input type="hidden" name="REQUEST_TOKEN" value="'.REQUEST_TOKEN.'">
-' . $return . '
-</div>
-<div class="tl_opener">'.$GLOBALS['TL_LANG']['MSC']['open_panels'].'</div>
-</form>
-';
-
-		return $return;
+		$Panel->filters = $arrFilters;
+		return $Panel->parse();
 	}
 	
 	/* ARTIKEL-ANSICHT */
@@ -272,61 +246,50 @@ class DC_Table extends \Contao\DC_Table
 		$icon = $GLOBALS['TL_DCA'][$useTable]['list']['sorting']['icon'] ?: 'pagemounts.gif';
 		$label = \Image::getHtml($icon).' <label>'.$label.'</label>';
 
-		// Begin buttons container
-		$return = '
-<div id="tl_buttons">'.((\Input::get('act') == 'select') ? '
-<a href="'.$this->getReferer(true).'" class="header_back" title="'.specialchars($GLOBALS['TL_LANG']['MSC']['backBTTitle']).'" accesskey="b" onclick="Backend.getScrollOffset()">'.$GLOBALS['TL_LANG']['MSC']['backBT'].'</a> ' : (isset($GLOBALS['TL_DCA'][$this->strTable]['config']['backlink']) ? '
-<a href="contao/main.php?'.$GLOBALS['TL_DCA'][$this->strTable]['config']['backlink'].'" class="header_back" title="'.specialchars($GLOBALS['TL_LANG']['MSC']['backBTTitle']).'" accesskey="b" onclick="Backend.getScrollOffset()">'.$GLOBALS['TL_LANG']['MSC']['backBT'].'</a> ' : '')) . ((\Input::get('act') != 'select' && !$blnClipboard && !$GLOBALS['TL_DCA'][$this->strTable]['config']['closed']) ? '
-<a href="'.$this->addToUrl('act=paste&amp;mode=create&amp;use=tl_page').'" class="header_new" title="'.specialchars($GLOBALS['TL_LANG']['tl_page']['new'][1]).'" accesskey="n" onclick="Backend.getScrollOffset()">'.$GLOBALS['TL_LANG']['tl_page']['new'][0].'</a>' .
-'<a href="'.$this->addToUrl('act=paste&amp;mode=create&amp;use=tl_article').'" class="header_new" title="'.specialchars($GLOBALS['TL_LANG'][$this->strTable]['new'][1]).'" accesskey="n" onclick="Backend.getScrollOffset()">'.$GLOBALS['TL_LANG'][$this->strTable]['new'][0].'</a> ' : '') . 
 
-((\Input::get('act') != 'select' && !$blnClipboard) ? $this->generateGlobalButtons() : '') . 
-($blnClipboard ? '<a href="'.$this->addToUrl('clipboard=1').'" class="header_clipboard" title="'.specialchars($GLOBALS['TL_LANG']['MSC']['clearClipboard']).'" accesskey="x">'.$GLOBALS['TL_LANG']['MSC']['clearClipboard'].'</a> ' : '') . '
-</div>' . \Message::generate(true);
+		$tplTree = new \BackendTemplate('be_tree');
+		$tplTree->action = ampersand(\Environment::get('request'), true);
+		$tplTree->blnClipboard = $blnClipboard;
+		$tplTree->table = $table;
+		$tplTree->label = $label;
+		$tplTree->treeClass = $treeClass;
+
+		/* Globale Buttons, Alles aufklappen, Mehere bearbeiten ... */
+		$tplTreeButtons = new \BackendTemplate('be_tree_buttons');
+		$tplTreeButtons->referer = $this->getReferer(true);
+		$tplTreeButtons->table = $this->strTable;
+		$tplTreeButtons->globalButtons = $this->generateGlobalButtons();
+		$tplTreeButtons->blnClipboard = $blnClipboard;
+		$tplTreeButtons->message = \Message::generate(true);
+
+		// Begin buttons container
+		$return = $tplTreeButtons->parse();
 
 		$tree = '';
 		$blnHasSorting = $this->Database->fieldExists('sorting', $table);
 		$blnNoRecursion = false;
 
 		// Limit the results by modifying $this->root
-		if ($session['search'][$this->strTable]['value'] != '')
-		{
+		if ($session['search'][$this->strTable]['value'] != '') {
 			$for = ($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['mode'] == 6) ? 'pid' : 'id';
 
 			if ($session['search'][$this->strTable]['field'] == 'id')
-			{
-				$objRoot = $this->Database->prepare("SELECT $for FROM {$this->strTable} WHERE id=?")
-										  ->execute($session['search'][$this->strTable]['value']);
-			}
+				$objRoot = $this->Database->prepare("SELECT $for FROM {$this->strTable} WHERE id=?")->execute($session['search'][$this->strTable]['value']);
 			else
-			{
-				$objRoot = $this->Database->prepare("SELECT $for FROM {$this->strTable} WHERE CAST(".$session['search'][$this->strTable]['field']." AS CHAR) REGEXP ? GROUP BY $for")
-										  ->execute($session['search'][$this->strTable]['value']);
-			}
+				$objRoot = $this->Database->prepare("SELECT $for FROM {$this->strTable} WHERE CAST(".$session['search'][$this->strTable]['field']." AS CHAR) REGEXP ? GROUP BY $for")->execute($session['search'][$this->strTable]['value']);
 
 			if ($objRoot->numRows < 1)
-			{
 				$this->root = array();
-			}
-			else
-			{
+			else {
 				// Respect existing limitations (root IDs)
-				if (is_array($GLOBALS['TL_DCA'][$table]['list']['sorting']['root']))
-				{
+				if (is_array($GLOBALS['TL_DCA'][$table]['list']['sorting']['root'])) {
 					$arrRoot = array();
-
 					while ($objRoot->next())
-					{
 						if (count(array_intersect($this->root, $this->Database->getParentRecords($objRoot->$for, $table))) > 0)
-						{
 							$arrRoot[] = $objRoot->$for;
-						}
-					}
-
 					$this->root = $arrRoot;
 				}
-				else
-				{
+				else {
 					$blnNoRecursion = true;
 					$this->root = $objRoot->fetchEach($for);
 				}
@@ -335,63 +298,31 @@ class DC_Table extends \Contao\DC_Table
 
 		// Call a recursive function that builds the tree
 		for ($i=0, $c=count($this->root); $i<$c; $i++)
-		{
 			$tree .= $this->generateTree($table, $this->root[$i], array('p'=>$this->root[($i-1)], 'n'=>$this->root[($i+1)]), $blnHasSorting, -20, ($blnClipboard ? $arrClipboard : false), ($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['mode'] == 5 && $blnClipboard && $this->root[$i] == $arrClipboard['id']), false, $blnNoRecursion);
-		}
 
 		// Return if there are no records
 		if ($tree == '' && \Input::get('act') != 'paste')
-		{
-			return $return . '
-<p class="tl_empty">'.$GLOBALS['TL_LANG']['MSC']['noResult'].'</p>';
-		}
+			return $return . '<p class="tl_empty">'.$GLOBALS['TL_LANG']['MSC']['noResult'].'</p>';
 
-		$return .= ((\Input::get('act') == 'select') ? '
-
-<form action="'.ampersand(\Environment::get('request'), true).'" id="tl_select" class="tl_form" method="post">
-<div class="tl_formbody">
-<input type="hidden" name="FORM_SUBMIT" value="tl_select">
-<input type="hidden" name="REQUEST_TOKEN" value="'.REQUEST_TOKEN.'">' : '').($blnClipboard ? '
-
-<div id="paste_hint">
-  <p>'.$GLOBALS['TL_LANG']['MSC']['selectNewPosition'].'</p>
-</div>' : '').'
-
-<div class="tl_listing_container tree_view" id="tl_listing">'.(isset($GLOBALS['TL_DCA'][$table]['list']['sorting']['breadcrumb']) ? $GLOBALS['TL_DCA'][$table]['list']['sorting']['breadcrumb'] : '').((\Input::get('act') == 'select') ? '
-
-<div class="tl_select_trigger">
-<label for="tl_select_trigger" class="tl_select_label">'.$GLOBALS['TL_LANG']['MSC']['selectAll'].'</label> <input type="checkbox" id="tl_select_trigger" onclick="Backend.toggleCheckboxes(this)" class="tl_tree_checkbox">
-</div>' : '').'
-
-<ul class="tl_listing '. $treeClass .'">
-  <li class="tl_folder_top"><div class="tl_left">'.$label.'</div> <div class="tl_right">';
+		$tplTree->tree = $tree;
 
 		$_buttons = '&nbsp;';
-
 		// Show paste button only if there are no root records specified
-		if (\Input::get('act') != 'select' && $GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['mode'] == 5 && $blnClipboard && ((!count($GLOBALS['TL_DCA'][$table]['list']['sorting']['root']) && $GLOBALS['TL_DCA'][$table]['list']['sorting']['root'] !== false) || $GLOBALS['TL_DCA'][$table]['list']['sorting']['rootPaste']))
-		{
+		if (\Input::get('act') != 'select' && $GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['mode'] == 5 && $blnClipboard && ((!count($GLOBALS['TL_DCA'][$table]['list']['sorting']['root']) && $GLOBALS['TL_DCA'][$table]['list']['sorting']['root'] !== false) || $GLOBALS['TL_DCA'][$table]['list']['sorting']['rootPaste'])) {
 			// Call paste_button_callback (&$dc, $row, $table, $cr, $childs, $previous, $next)
-			if (is_array($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['paste_button_callback']))
-			{
+			if (is_array($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['paste_button_callback'])) {
 				$strClass = $GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['paste_button_callback'][0];
 				$strMethod = $GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['paste_button_callback'][1];
 
 				$this->import($strClass);
 				$_buttons = $this->$strClass->$strMethod($this, array('id'=>0), $table, false, $arrClipboard);
 			}
-			else
-			{
+			else {
 				$imagePasteInto = \Image::getHtml('pasteinto.gif', $GLOBALS['TL_LANG'][$this->strTable]['pasteinto'][0]);
 				$_buttons = '<a class="'.$arrClipboard['mode'].'" href="'.$this->addToUrl('act='.$arrClipboard['mode'].'&amp;mode=2&amp;pid=0'.(!is_array($arrClipboard['id']) ? '&amp;id='.$arrClipboard['id'] : '')).'" title="'.specialchars($GLOBALS['TL_LANG'][$this->strTable]['pasteinto'][0]).'" onclick="Backend.getScrollOffset()">'.$imagePasteInto.'</a> ';
 			}
 		}
-
-		// End table
-		$return .= $_buttons . '</div><div style="clear:both"></div></li>'.$tree.'
-</ul>
-
-</div>';
+		$tplTree->buttons = $_buttons;
 
 		// Close the form
 		if (\Input::get('act') == 'select')
@@ -404,28 +335,12 @@ class DC_Table extends \Contao\DC_Table
 				foreach ($GLOBALS['TL_DCA'][$this->strTable]['edit']['buttons_callback'] as $callback)
 				{
 					$this->import($callback[0]);
-					$callbacks .= $this->$callback[0]->$callback[1]($this);
+					$tplTree->callbacks .= $this->$callback[0]->$callback[1]($this);
 				}
 			}
-
-			if(\Input::get('act') != 'select' && \Input::get('popup') !== '1')
-			$return .= '
-
-<div class="tl_formbody_submit" style="text-align:right">
-
-<div class="tl_submit_container">' . (!$GLOBALS['TL_DCA'][$this->strTable]['config']['notDeletable'] ? '
-  <input type="submit" name="delete" id="delete" class="tl_submit" accesskey="d" onclick="return confirm(\''.$GLOBALS['TL_LANG']['MSC']['delAllConfirm'].'\')" value="'.specialchars($GLOBALS['TL_LANG']['MSC']['deleteSelected']).'"> ' : '') . '
-  <input type="submit" name="cut" id="cut" class="tl_submit" accesskey="x" value="'.specialchars($GLOBALS['TL_LANG']['MSC']['moveSelected']).'">
-  <input type="submit" name="copy" id="copy" class="tl_submit" accesskey="c" value="'.specialchars($GLOBALS['TL_LANG']['MSC']['copySelected']).'"> ' . (!$GLOBALS['TL_DCA'][$this->strTable]['config']['notEditable'] ? '
-  <input type="submit" name="override" id="override" class="tl_submit" accesskey="v" value="'.specialchars($GLOBALS['TL_LANG']['MSC']['overrideSelected']).'">
-  <input type="submit" name="edit" id="edit" class="tl_submit" accesskey="s" value="'.specialchars($GLOBALS['TL_LANG']['MSC']['editSelected']).'"> ' : '') . $callbacks . '
-</div>
-
-</div>';
-
-$return .= '</div>
-</form>';
 		}
+
+		$return .= $tplTree->parse();
 
 		return $return;
 	}
@@ -449,6 +364,9 @@ $return .= '</div>
 	{
 		static $session;
 
+		$tplTree = new \BackendTemplate('be_tree_default');
+		$tplTree->intMargin = $intMargin;
+
 		if(\Input::get('do') != 'article')
 			return parent::generateTree($table, $id, $arrPrevNext, $blnHasSorting, $intMargin, $arrClipboard, $blnCircularReference, $protectedPage, $blnNoRecursion);
 
@@ -456,17 +374,13 @@ $return .= '</div>
 		$node = ($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['mode'] == 6) ? $this->strTable.'_'.$table.'_tree' : $this->strTable.'_tree';
 
 		// Toggle nodes
-		if (\Input::get('ptg'))
-		{
+		if (\Input::get('ptg')) {
 			$session[$node][\Input::get('ptg')] = (isset($session[$node][\Input::get('ptg')]) && $session[$node][\Input::get('ptg')] == 1) ? 0 : 1;
 			$this->Session->setData($session);
-
 			$this->redirect(preg_replace('/(&(amp;)?|\?)ptg=[^& ]*/i', '', \Environment::get('request')));
 		}
 
-		$objRow = $this->Database->prepare("SELECT * FROM " . $table . " WHERE id=?")
-								 ->limit(1)
-								 ->execute($id);
+		$objRow = $this->Database->prepare("SELECT * FROM " . $table . " WHERE id=?")->limit(1)->execute($id);
 
 		// Return if there is no result
 		if ($objRow->numRows < 1)
@@ -476,66 +390,73 @@ $return .= '</div>
 		}
 
 		$return = '';
-		$intSpacing = 20;
+		$tplTree->intSpacing = 20;
 		$childs = array();
 
 		// Add the ID to the list of current IDs
 		if ($this->strTable == $table)
-		{
 			$this->current[] = $objRow->id;
-		}
 
 		// Check whether there are child records
-		if (!$blnNoRecursion)
-		{
-			if ($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['mode'] == 5 || $this->strTable != $table)
-			{
-				$objChilds = $this->Database->prepare("SELECT id FROM " . $table . " WHERE pid=?" . ($blnHasSorting ? " ORDER BY sorting" : ''))
-											->execute($id);
+		if (!$blnNoRecursion) {
+			if ($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['mode'] == 5 || $this->strTable != $table) {
+				$objChilds = $this->Database->prepare("SELECT id FROM " . $table . " WHERE pid=?" . ($blnHasSorting ? " ORDER BY sorting" : ''))->execute($id);
 
 				if ($objChilds->numRows)
-				{
 					$childs = $objChilds->fetchEach('id');
-				}
 			}
 		}
+
+		$tplTree->childs = $childs;
 
 		$blnProtected = false;
 
 		// Check whether the page is protected
 		if ($table == 'tl_page')
-		{
 			$blnProtected = ($objRow->protected || $protectedPage) ? true : false;
-		}
 
 		$session[$node][$id] = (is_int($session[$node][$id])) ? $session[$node][$id] : 0;
-		$mouseover = ($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['mode'] == 5 || $table == $this->strTable) ? ' onmouseover="Theme.hoverDiv(this,1)" onmouseout="Theme.hoverDiv(this,0)" onclick="Theme.toggleSelect(this)"' : '';
-	
-		$RowType = ((($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['mode'] == 5 && $objRow->type == 'root') || $table != $this->strTable) ? 'tl_folder' : 'tl_file');
-		$return .= "\n  " . '<li class="'.$RowType.' click2edit"'.$mouseover.'><div class="tl_left" style="padding-left:'.($intMargin + $intSpacing + (empty($childs) ? 20 : 0)).'px">';
-
+		$tplTree->mouseover = ($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['mode'] == 5 || $table == $this->strTable);
+		$tplTree->RowType = ((($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['mode'] == 5 && $objRow->type == 'root') || $table != $this->strTable) ? 'tl_folder' : 'tl_file');
+		
 		// Calculate label and add a toggle button
 		$args = array();
 		$showFields = $GLOBALS['TL_DCA'][$table]['list']['label']['fields'];
-		$level = ($intMargin / $intSpacing + 1);
+		$level = ($intMargin / $tplTree->intSpacing + 1);
 
-		if (!empty($childs))
-		{
-			$img = ($session[$node][$id] == 1) ? 'folMinus.gif' : 'folPlus.gif';
-			$alt = ($session[$node][$id] == 1) ? $GLOBALS['TL_LANG']['MSC']['collapseNode'] : $GLOBALS['TL_LANG']['MSC']['expandNode'];
-			$return .= '<a href="'.$this->addToUrl('ptg='.$id).'" title="'.specialchars($alt).'" onclick="Backend.getScrollOffset();return AjaxRequest.toggleStructure(this,\''.$node.'_'.$id.'\','.$level.','.$GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['mode'].')">'.\Image::getHtml($img, '', 'style="margin-right:2px"').'</a>';
+
+		$tplTreeChilds = new \BackendTemplate('be_tree_childs');
+		$tplTreeChilds->level = $level;
+		$tplTreeChilds->node = $node;
+		$tplTreeChilds->id = $id;
+		$tplTreeChilds->table = $this->strTable;
+		if ($childs) {
+			$tplTreeChilds->img = ($session[$node][$id] == 1) ? 'folMinus.gif' : 'folPlus.gif';
+			$tplTreeChilds->alt = ($session[$node][$id] == 1) ? ($session[$node][$id] == 1) ? $GLOBALS['TL_LANG']['MSC']['collapseNode'] : $GLOBALS['TL_LANG']['MSC']['expandNode'] : '';
+			$tplTree->childs = $tplTreeChilds->parse();
+		}
+		elseif($this->strTable != $table) {
+			// Check whether there are child records
+			if (!$blnNoRecursion) {
+				$objChilds = $this->Database->prepare("SELECT id FROM " . $this->strTable . " WHERE pid=?" . ($blnHasSorting ? " ORDER BY sorting" : ''))->execute($id);
+
+				if ($objChilds->numRows)
+					$childs = $objChilds->fetchEach('id');
+			}
+			$tplTreeChilds->noRequest = true;
+			$tplTreeChilds->img = 'system/modules/SWBackend/assets/openArticles.png';
+			$tplTreeChilds->alt = ($session[$node][$id] == 1) ? ($session[$node][$id] == 1) ? $GLOBALS['TL_LANG']['MSC']['collapseNode'] : $GLOBALS['TL_LANG']['MSC']['expandNode'] : '';
+			$tplTree->childs = $tplTreeChilds->parse();
+			$tplTree->hasArticles = 'hasArticles';
 		}
 
-		foreach ($showFields as $k=>$v)
-		{
+
+		foreach ($showFields as $k=>$v) {
 			// Decrypt the value
 			if ($GLOBALS['TL_DCA'][$table]['fields'][$v]['eval']['encrypt'])
-			{
 				$objRow->$v = \Encryption::decrypt(deserialize($objRow->$v));
-			}
 
-			if (strpos($v, ':') !== false)
-			{
+			if (strpos($v, ':') !== false) {
 				list($strKey, $strTable) = explode(':', $v);
 				list($strTable, $strField) = explode('.', $strTable);
 
@@ -546,48 +467,35 @@ $return .= '</div>
 				$args[$k] = $objRef->numRows ? $objRef->$strField : '';
 			}
 			elseif (in_array($GLOBALS['TL_DCA'][$table]['fields'][$v]['flag'], array(5, 6, 7, 8, 9, 10)))
-			{
 				$args[$k] = \Date::parse($GLOBALS['TL_CONFIG']['datimFormat'], $objRow->$v);
-			}
 			elseif ($GLOBALS['TL_DCA'][$table]['fields'][$v]['inputType'] == 'checkbox' && !$GLOBALS['TL_DCA'][$table]['fields'][$v]['eval']['multiple'])
-			{
 				$args[$k] = ($objRow->$v != '') ? (isset($GLOBALS['TL_DCA'][$table]['fields'][$v]['label'][0]) ? $GLOBALS['TL_DCA'][$table]['fields'][$v]['label'][0] : $v) : '';
-			}
 			else
-			{
 				$args[$k] = $GLOBALS['TL_DCA'][$table]['fields'][$v]['reference'][$objRow->$v] ?: $objRow->$v;
-			}
 		}
 
 		$label = vsprintf(((strlen($GLOBALS['TL_DCA'][$table]['list']['label']['format'])) ? $GLOBALS['TL_DCA'][$table]['list']['label']['format'] : '%s'), $args);
 
 		// Shorten the label if it is too long
 		if ($GLOBALS['TL_DCA'][$table]['list']['label']['maxCharacters'] > 0 && $GLOBALS['TL_DCA'][$table]['list']['label']['maxCharacters'] < utf8_strlen(strip_tags($label)))
-		{
 			$label = trim(\String::substrHtml($label, $GLOBALS['TL_DCA'][$table]['list']['label']['maxCharacters'])) . ' …';
-		}
 
 		$label = preg_replace('/\(\) ?|\[\] ?|\{\} ?|<> ?/', '', $label);
 
 		// Call the label_callback ($row, $label, $this)
-		if (is_array($GLOBALS['TL_DCA'][$table]['list']['label']['label_callback']))
-		{
+		if (is_array($GLOBALS['TL_DCA'][$table]['list']['label']['label_callback'])){
 			$strClass = $GLOBALS['TL_DCA'][$table]['list']['label']['label_callback'][0];
 			$strMethod = $GLOBALS['TL_DCA'][$table]['list']['label']['label_callback'][1];
 
 			$this->import($strClass);
-			$return .= $this->$strClass->$strMethod($objRow->row(), $label, $this, '', false, $blnProtected);
+			$tplTree->label = $this->$strClass->$strMethod($objRow->row(), $label, $this, '', false, $blnProtected);
 		}
 		elseif (is_callable($GLOBALS['TL_DCA'][$table]['list']['label']['label_callback']))
-		{
-			$return .= $GLOBALS['TL_DCA'][$table]['list']['label']['label_callback']($objRow->row(), $label, $this, '', false, $blnProtected);
-		}
+			$tplTree->label = $GLOBALS['TL_DCA'][$table]['list']['label']['label_callback']($objRow->row(), $label, $this, '', false, $blnProtected);
 		else
-		{
-			$return .= \Image::getHtml('iconPLAIN.gif', '') . ' ' . $label;
-		}
+			$tplTree->label = \Image::getHtml('iconPLAIN.gif', '') . ' ' . $label;
 
-		$return .= '</div> <div class="tl_right">';
+
 		$previous = ($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['mode'] == 6) ? $arrPrevNext['pp'] : $arrPrevNext['p'];
 		$next = ($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['mode'] == 6) ? $arrPrevNext['nn'] : $arrPrevNext['n'];
 		$_button = $_buttons = '';
@@ -609,19 +517,16 @@ $return .= '</div>
 		$_button = '';
 
 		// Paste buttons
-		if ($arrClipboard !== false && \Input::get('act') != 'select')
-		{
+		if ($arrClipboard !== false && \Input::get('act') != 'select') {
 			$_buttons .= ' ';
 
 			// Call paste_button_callback(&$dc, $row, $table, $blnCircularReference, $arrClipboard, $childs, $previous, $next)
-			if (is_array($GLOBALS['TL_DCA'][$table]['list']['sorting']['paste_button_callback']))
-			{
+			if (is_array($GLOBALS['TL_DCA'][$table]['list']['sorting']['paste_button_callback'])) {
 				$strClass = $GLOBALS['TL_DCA'][$table]['list']['sorting']['paste_button_callback'][0];
 				$strMethod = $GLOBALS['TL_DCA'][$table]['list']['sorting']['paste_button_callback'][1];
 
 				$this->import($strClass);
-				if($table == \Input::get('use') || $table == 'tl_page')
-				{
+				if($table == \Input::get('use') || $table == 'tl_page') {
 					$_button = $this->$strClass->$strMethod($this, $objRow->row(), $table, $blnCircularReference, $arrClipboard, ($table != \Input::get('use') && $table == 'tl_page'));
 					$foundMode = preg_match_all('/(mode=([^\&]+)[^"]+"\s*)/',$_button,$results);
 					if($foundMode)
@@ -629,83 +534,75 @@ $return .= '</div>
 					$_buttons .= $_button;
 				}
 			}
-			elseif (is_callable($GLOBALS['TL_DCA'][$table]['list']['sorting']['paste_button_callback']))
-			{
+			elseif (is_callable($GLOBALS['TL_DCA'][$table]['list']['sorting']['paste_button_callback'])) {
 				$_button = $GLOBALS['TL_DCA'][$table]['list']['sorting']['paste_button_callback']($this, $objRow->row(), $table, $blnCircularReference, $arrClipboard, $childs, $previous, $next, ($table != \Input::get('use') && $table == 'tl_page'));
 				$foundMode = preg_match_all('/(mode=([^\&]+)[^"]+"\s*)/',$_button,$results);
 				if($foundMode)
 					$_button = preg_replace_callback('/(mode=([^\&]+)[^"]+"\s*)/',array($this,'addPasteClasses'),$_button);
 				$_buttons .= $_button;
 			}
-			else
-			{
+			else {
 				$imagePasteAfter = \Image::getHtml('pasteafter.gif', sprintf($GLOBALS['TL_LANG'][$table]['pasteafter'][1], $id));
 				$imagePasteInto = \Image::getHtml('pasteinto.gif', sprintf($GLOBALS['TL_LANG'][$table]['pasteinto'][1], $id));
 
 				// Regular tree (on cut: disable buttons of the page all its childs to avoid circular references)
-				if ($GLOBALS['TL_DCA'][$table]['list']['sorting']['mode'] == 5)
-				{
+				if ($GLOBALS['TL_DCA'][$table]['list']['sorting']['mode'] == 5) {
 					$_buttons .= ($arrClipboard['mode'] == 'cut' && ($blnCircularReference || $arrClipboard['id'] == $id) || $arrClipboard['mode'] == 'cutAll' && ($blnCircularReference || in_array($id, $arrClipboard['id'])) || (!empty($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['root']) && !$GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['rootPaste'] && in_array($id, $this->root))) ? \Image::getHtml('pasteafter_.gif').' ' : '<a class="'.$arrClipboard['mode'].'" href="'.$this->addToUrl('act='.$arrClipboard['mode'].'&amp;mode=1&amp;pid='.$id.(!is_array($arrClipboard['id']) ? '&amp;id='.$arrClipboard['id'] : '')).'" title="'.specialchars(sprintf($GLOBALS['TL_LANG'][$this->strTable]['pasteafter'][1], $id)).'" onclick="Backend.getScrollOffset()">'.$imagePasteAfter.'</a> ';
 					$_buttons .= ($arrClipboard['mode'] == 'paste' && ($blnCircularReference || $arrClipboard['id'] == $id) || $arrClipboard['mode'] == 'cutAll' && ($blnCircularReference || in_array($id, $arrClipboard['id']))) ? \Image::getHtml('pasteinto_.gif').' ' : '<a href="'.$this->addToUrl('act='.$arrClipboard['mode'].'&amp;mode=2&amp;pid='.$id.(!is_array($arrClipboard['id']) ? '&amp;id='.$arrClipboard['id'] : '')).'" class="'.$arrClipboard['mode'].'" title="'.specialchars(sprintf($GLOBALS['TL_LANG'][$this->strTable]['pasteinto'][1], $id)).'" onclick="Backend.getScrollOffset()">'.$imagePasteInto.'</a> ';
 				}
 
 				// Extended tree
-				else
-				{
+				else {
 					$_buttons .= ($this->strTable == $table) ? (($arrClipboard['mode'] == 'cut' && ($blnCircularReference || $arrClipboard['id'] == $id) || $arrClipboard['mode'] == 'cutAll' && ($blnCircularReference || in_array($id, $arrClipboard['id']))) ? \Image::getHtml('pasteafter_.gif') : '<a class="'.$arrClipboard['mode'].'" href="'.$this->addToUrl('act='.$arrClipboard['mode'].'&amp;mode=1&amp;pid='.$id.(!is_array($arrClipboard['id']) ? '&amp;id='.$arrClipboard['id'] : '')).'" title="'.specialchars(sprintf($GLOBALS['TL_LANG'][$this->strTable]['pasteafter'][1], $id)).'" onclick="Backend.getScrollOffset()">'.$imagePasteAfter.'</a> ') : '';
 					$_buttons .= ($this->strTable != $table) ? '<a class="'.$arrClipboard['mode'].'"  href="'.$this->addToUrl('act='.$arrClipboard['mode'].'&amp;mode=2&amp;pid='.$id.(!is_array($arrClipboard['id']) ? '&amp;id='.$arrClipboard['id'] : '')).'" title="'.specialchars(sprintf($GLOBALS['TL_LANG'][$this->strTable]['pasteinto'][1], $id)).'" onclick="Backend.getScrollOffset()">'.$imagePasteInto.'</a> ' : '';
 				}
 			}
 		}
+		$tplTree->buttons = $_buttons;
 
-		$return .= ($_buttons ?: '&nbsp;') . '</div><div style="clear:both"></div></li>';
 
 		// ARTIKEL
 		if ($table != $this->strTable)
 		{
 			$objChilds = $this->Database->prepare("SELECT id FROM " . $this->strTable . " WHERE pid=?" . ($blnHasSorting ? " ORDER BY sorting" : ''))
 							 			->execute($id);
-
+			$arrChilds = array();
 			if ($objChilds->numRows)
 			{
 				$ids = $objChilds->fetchEach('id');
 
 				for ($j=0, $c=count($ids); $j<$c; $j++)
 				{
-					$return .= $this->generateTree($this->strTable, $ids[$j], array('pp'=>$ids[($j-1)], 'nn'=>$ids[($j+1)]), $blnHasSorting, ($intMargin + $intSpacing), $arrClipboard, false, ($j<(count($ids)-1) || !empty($childs)));
+					$arrChilds[] = $this->generateTree($this->strTable, $ids[$j], array('pp'=>$ids[($j-1)], 'nn'=>$ids[($j+1)]), $blnHasSorting, ($intMargin + $tplTree->intSpacing), $arrClipboard, false, ($j<(count($ids)-1) || !empty($childs)));
 				}
 			}
+			$tplTree->subitems = $arrChilds;
 		}
+
 
 		// Begin a new submenu Tatsächliche Seiten :)
 		if (!$blnNoRecursion)
 		{
+			$tplTreePages = new \BackendTemplate('be_tree_pages');
 			if (!empty($childs) && $session[$node][$id] == 1)
-			{
-				$return .= '<li class="parent" id="'.$node.'_'.$id.'"><ul class="level_'.$level.'">';
-			}
+				$tplTreePages->childs = true;
+			$tplTreePages->node = $node;
+			$tplTreePages->id = $id;
+			$tplTreePages->level = $level;
 
 			// Add the records of the parent table
+			$arrPages = array();
 			if ($session[$node][$id] == 1)
-			{
 				if (is_array($childs))
-				{
 					for ($k=0, $c=count($childs); $k<$c; $k++)
-					{
-						$return .= $this->generateTree($table, $childs[$k], array('p'=>$childs[($k-1)], 'n'=>$childs[($k+1)]), $blnHasSorting, ($intMargin + $intSpacing), $arrClipboard, ((($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['mode'] == 5 && $childs[$k] == $arrClipboard['id']) || $blnCircularReference) ? true : false), ($blnProtected || $protectedPage));
-					}
-				}
-			}
+						$arrPages[] = $this->generateTree($table, $childs[$k], array('p'=>$childs[($k-1)], 'n'=>$childs[($k+1)]), $blnHasSorting, ($intMargin + $tplTree->intSpacing), $arrClipboard, ((($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['mode'] == 5 && $childs[$k] == $arrClipboard['id']) || $blnCircularReference) ? true : false), ($blnProtected || $protectedPage));
+			$tplTreePages->pages = $arrPages;
 
-			// Close the submenu
-			if (!empty($childs) && $session[$node][$id] == 1)
-			{
-				$return .= '</ul></li>';
-			}
+			$tplTree->pages = $tplTreePages->parse();
 		}
 
 		$this->Session->setData($session);
-		return $return;
+		return $tplTree->parse();
 	}
 
 	private function addPasteClasses($matches=array())

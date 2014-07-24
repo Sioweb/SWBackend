@@ -70,7 +70,7 @@ class Sioweb extends \Controller
 						'title'=>'Add',
 						'label'=>'Add',
 						'class'=>'header_new',
-						'href'=>$this->addToUrl('do='.$mKey.'&amp;act=create')
+						'href'=>$this->addToUrl('do='.$mKey.'&amp;act=create'.'&amp;rt='.$GLOBALS['_SESSION']['REQUEST_TOKEN'])
 					);
 					if($Globals)
 						foreach($Globals as $oKey => $operation)
@@ -79,7 +79,7 @@ class Sioweb extends \Controller
 									'key'=>$oKey,
 									'title'=>$operation['label'][0],
 									'label'=>$operation['label'][1],
-									'href'=>$this->addToUrl($operation['href'])
+									'href'=>$this->addToUrl($operation['href'].'&amp;rt='.$GLOBALS['_SESSION']['REQUEST_TOKEN'])
 								));
 					$Theme = \ThemeModel::findAll();
 					if($Theme)
@@ -105,8 +105,9 @@ class Sioweb extends \Controller
 										'href'=>($operation['href'] ? $this->addToUrl('do='.$mKey.'&amp;'.$operation['href'].'&amp;id='.$Theme->id.
 											(strpos($operation['href'],'act=') === false ? '&amp;act=&amp;' : '' ) .
 											(strpos($operation['href'],'table=') === false ? '&amp;table=' : '' ) .
-											(strpos($operation['href'],'use=') === false ? '&amp;use=' : '' )) 
-											: $this->addToUrl('do='.$mKey.'&amp;act='.$oKey.'&amp;id='.$Theme->id))
+											(strpos($operation['href'],'use=') === false ? '&amp;use=' : '' )
+											.'&amp;rt='.$GLOBALS['_SESSION']['REQUEST_TOKEN']) 
+											: $this->addToUrl('do='.$mKey.'&amp;act='.$oKey.'&amp;id='.$Theme->id.'&amp;rt='.$GLOBALS['_SESSION']['REQUEST_TOKEN']))
 									);
 								else
 								{
@@ -169,7 +170,7 @@ class Sioweb extends \Controller
 			(strpos($v['href'],'table=') === false ? '&amp;table=' : '' ) .
 			(strpos($v['href'],'use=') === false ? '&amp;use=' : '' )
 			: 'do='.$de.'&amp;act='.$act.'&amp;id='.$arrRow['id']);
-
+		
 		// Call a custom function instead of using the default button
 		if (is_array($v['button_callback']))
 		{
@@ -179,15 +180,15 @@ class Sioweb extends \Controller
 		}
 		elseif (is_callable($v['button_callback']))
 		{
-			return trim($v['button_callback']($arrRow, 'do='.$do.'&amp;'.$v['href'], $label, $title, $v['icon'], $attributes, $strTable));
+			return trim($v['button_callback']($arrRow, 'do='.$do.'&amp;'.$v['href'].'&amp;rt=1', $label, $title, $v['icon'], $attributes, $strTable));
 		}
 
 		if ($k != 'move' && $v != 'move')
 		{
 			if ($k == 'show')
-				return trim('<a href="'.$this->addToUrl($v['href'].'&amp;popup=1',1).'" title="'.specialchars($title).'" onclick="Backend.openModalIframe({\'width\':765,\'title\':\''.specialchars(str_replace("'", "\\'", sprintf($GLOBALS['TL_LANG'][$strTable]['show'][1], $arrRow['id']))).'\',\'url\':this.href});return false"'.$attributes.'>'.\Image::getHtml($v['icon'], $label).'</a> ');
+				return trim('<a href="'.$this->addToUrl($v['href'].'&amp;rt='.$GLOBALS['_SESSION']['REQUEST_TOKEN'].'&amp;popup=1',1).'" title="'.specialchars($title).'" onclick="Backend.openModalIframe({\'width\':765,\'title\':\''.specialchars(str_replace("'", "\\'", sprintf($GLOBALS['TL_LANG'][$strTable]['show'][1], $arrRow['id']))).'\',\'url\':this.href});return false"'.$attributes.'>'.\Image::getHtml($v['icon'], $label).'</a> ');
 			else
-				return trim('<a href="'.$this->addToUrl($v['href'],1).'" title="'.specialchars($title).'"'.$attributes.'>'.\Image::getHtml($v['icon'], $label).'</a>');
+				return trim('<a href="'.$this->addToUrl($v['href'].'&amp;rt='.$GLOBALS['_SESSION']['REQUEST_TOKEN'],1).'" title="'.specialchars($title).'"'.$attributes.'>'.\Image::getHtml($v['icon'], $label).'</a>');
 		}
 	}
 }

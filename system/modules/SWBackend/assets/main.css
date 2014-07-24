@@ -1,3 +1,13 @@
+.hasArticles ~ .tl_file {
+	max-height: 0;
+	overflow: hidden;
+	-webkit-transition: max-height .4s;
+	-o-transition: max-height .4s;
+	transition: max-height .4s;
+}
+.hasArticles ~ .tl_file.open { 
+	max-height: 40px;
+}
 .dragNdrop {
 	position: relative;
 }

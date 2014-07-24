@@ -42,4 +42,12 @@ ClassLoader::addClasses(array
 
 \TemplateLoader::addFiles(array(
 	'ce_separator'		=> 'system/modules/SWBackend/templates/elements',
+	'be_panel'			=> 'system/modules/SWBackend/templates/backend/panel',
+	'be_panel_default'	=> 'system/modules/SWBackend/templates/backend/panel',
+
+	'be_tree'			=> 'system/modules/SWBackend/templates/backend/tree',
+	'be_tree_buttons'	=> 'system/modules/SWBackend/templates/backend/tree',
+	'be_tree_default'	=> 'system/modules/SWBackend/templates/backend/tree',
+	'be_tree_childs'	=> 'system/modules/SWBackend/templates/backend/tree',
+	'be_tree_pages'		=> 'system/modules/SWBackend/templates/backend/tree',
 ));

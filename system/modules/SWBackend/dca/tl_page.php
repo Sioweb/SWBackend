@@ -10,7 +10,7 @@
 * @package sioweb.contao.extensions.backend
 * @copyright Sascha Weidner, Sascha
 */
-
+$GLOBALS['TL_DCA']['tl_page']['config']['headline'] = 'title';
 $GLOBALS['TL_DCA']['tl_page']['list']['sorting']['paste_button_callback'] = array('sw_page','pastePage');
 unset($GLOBALS['TL_DCA']['tl_page']['list']['operations']['articles']);
 

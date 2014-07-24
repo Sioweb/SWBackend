@@ -1,0 +1,12 @@
+<li class="<?php echo $this->RowType;?><?php echo ' '.$this->hasArticles;?> click2edit"<?php if($this->mouseover):?> onmouseover="Theme.hoverDiv(this,1)" onmouseout="Theme.hoverDiv(this,0)" onclick="Theme.toggleSelect(this)"<?php endif;?>>
+	<div class="tl_left" style="padding-left:<?php echo ($this->intMargin + $this->intSpacing + (empty($this->childs) ? 20 : 0));?>px">
+		<?php echo (is_array($this->childs) ? implode('',$this->childs) : $this->childs);?>
+		<?php echo $this->label;?>
+	</div>
+	<div class="tl_right">
+		<?php echo $this->buttons;?>
+	</div>
+	<div style="clear:both"></div>
+</li>
+<?php echo ($this->subitems ? implode('',$this->subitems) : '');?>
+<?php echo $this->pages;?>

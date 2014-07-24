@@ -1,0 +1,7 @@
+<?php if(!$this->noRequest):?>
+<a href="<?php echo $this->addToUrl('ptg='.$this->id);?>" title="<?php echo specialchars($this->alt);?>" onclick="Backend.getScrollOffset();return AjaxRequest.toggleStructure(this,'<?php echo $this->node.'_'.$this->id;?>','<?php echo $this->level;?>','<?php echo $GLOBALS['TL_DCA'][$this->table]['list']['sorting']['mode'];?>')">
+<?php endif;?>
+	<?php echo \Image::getHtml($this->img, specialchars($this->alt), (!$this->noRequest ? 'style="margin-right:2px"':'onclick="Backend.toggleNextArticles(this);"'));?>
+<?php if(!$this->noRequest):?>
+</a>
+<?php endif;?>

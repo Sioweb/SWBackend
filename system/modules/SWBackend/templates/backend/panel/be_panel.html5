@@ -1,0 +1,8 @@
+<form action="<?php echo $this->action;?>" class="tl_form sw_<?php echo $this->table;?>" method="post">
+<div class="tl_formbody">
+<input type="hidden" name="FORM_SUBMIT" value="tl_filters">
+<input type="hidden" name="REQUEST_TOKEN" value="<?php echo $this->request_token;?>">
+	<?php echo implode('',$this->filters);?>
+</div>
+<div class="tl_opener"><?php echo $GLOBALS['TL_LANG']['MSC']['open_panels'];?></div>
+</form>

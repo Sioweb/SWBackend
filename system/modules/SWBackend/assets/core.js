@@ -4,7 +4,23 @@ String.implement({
 	}
 });
 
-Backend.siowebOptionsWizard = function(item,mode,id){
+Backend.toggleNextArticles = function(img) {
+	var parents = img.getParents('.tl_folder'),
+		item = parents,
+		nextItem = null;
+	if(parents.hasClass('open') == 'false') {
+		img.src = img.src.replace('open','close');
+		while((nextItem = item.addClass('open').getNext()).hasClass('tl_file') == 'true')
+			item = nextItem.addClass('open');
+	}
+	else {
+		img.src = img.src.replace('close','open');
+		while((nextItem = item.removeClass('open').getNext()).hasClass('tl_file') == 'true')
+			item = nextItem.removeClass('open');
+	}
+}
+
+Backend.siowebOptionsWizard = function(item,mode,id) {
 	var tl_right = item.getParent(),
 		row = tl_right.getParent();
 

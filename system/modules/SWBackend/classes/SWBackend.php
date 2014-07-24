@@ -23,6 +23,7 @@ class SWBackend extends Sioweb
 	{
 		if(strpos(\Environment::get('phpSelf'),'install.php') !== false)
 			return;
+
 		$this->getBackendUser();
 		$this->BackendUser = \BackendUser::getInstance();
 		#if((\BackendUser::getInstance()->id && \BackendUser::getInstance()->backendTheme != 'sioweb' && !\BackendUser::getInstance()->doNotUseTheme) || (!\BackendUser::getInstance()->id && !$GLOBALS['TL_CONFIG']['useSiowebTheme']))

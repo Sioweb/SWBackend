@@ -1,0 +1,9 @@
+<div class="tl_panel">
+	<?php if($this->intLast):?>
+	<div class="tl_submit_panel tl_subpanel">
+	<input type="image" name="filter" id="filter" src="<?php echo TL_FILES_URL;?>system/themes/<?php echo $this->theme;?>/images/reload.gif" class="tl_img_submit" title="<?php echo specialchars($GLOBALS['TL_LANG']['MSC']['applyTitle']);?>" alt="<?php echo specialchars($GLOBALS['TL_LANG']['MSC']['apply']);?>">
+	</div>
+	<?php endif;?>
+	<?php echo $this->panel;?>
+	<div class="clear"></div>
+</div>
