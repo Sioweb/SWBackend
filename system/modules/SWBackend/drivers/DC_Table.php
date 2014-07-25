@@ -390,7 +390,7 @@ class DC_Table extends \Contao\DC_Table
 		}
 
 		$return = '';
-		$tplTree->intSpacing = 20;
+		$tplTree->intSpacing = 24;
 		$childs = array();
 
 		// Add the ID to the list of current IDs
@@ -425,7 +425,9 @@ class DC_Table extends \Contao\DC_Table
 		$level = ($intMargin / $tplTree->intSpacing + 1);
 
 
+		$childsAndArticles = 0;
 		$treeChilds = '';
+		$tplClass = array();
 		if ($childs) {
 			$tplTreeChilds = new \BackendTemplate('be_tree_childs');
 			$tplTreeChilds->level = $level;
@@ -434,6 +436,8 @@ class DC_Table extends \Contao\DC_Table
 			$tplTreeChilds->table = $this->strTable;
 			$tplTreeChilds->img = ($session[$node][$id] == 1) ? 'folMinus.gif' : 'folPlus.gif';
 			$tplTreeChilds->alt = ($session[$node][$id] == 1) ? ($session[$node][$id] == 1) ? $GLOBALS['TL_LANG']['MSC']['collapseNode'] : $GLOBALS['TL_LANG']['MSC']['expandNode'] : '';
+			$tplClass[] = 'hasChilds';
+			$childsAndArticles++;
 			$treeChilds .= $tplTreeChilds->parse();
 		}
 		if($this->strTable != $table) {
@@ -447,21 +451,22 @@ class DC_Table extends \Contao\DC_Table
 				$objChilds = $this->Database->prepare("SELECT id FROM " . $this->strTable . " WHERE pid=?" . ($blnHasSorting ? " ORDER BY sorting" : ''))->execute($id);
 
 				if ($objChilds->numRows)
-					$childs = $objChilds->fetchEach('id');
+					$articleChilds = $objChilds->fetchEach('id');
 			}
 			$tplTreeChilds->noRequest = true;
 			$img = ($session['showHideArticles'][$id] == 1) ? 'closeArticles.png' : 'openArticles.png';
 			$tplTreeChilds->img = 'system/modules/SWBackend/assets/'.$img;
 			$tplTreeChilds->alt = $session[$node][$id] == 1 ? $GLOBALS['TL_LANG']['MSC']['collapseNode'] : $GLOBALS['TL_LANG']['MSC']['expandNode'];
-			if($childs) {
+			if($articleChilds) {
 				$treeChilds .= $tplTreeChilds->parse();
-				$tplClass = 'hasArticles';
+				$tplClass[] = 'hasArticles';
 				if($session['showHideArticles'][$id] == 1)
-					$tplClass .= ' open';
-				$tplTree->hasArticles = $tplClass;
+					$tplClass[] = 'open';
+				$childsAndArticles++;
 			}
 		}
-
+		$tplTree->childsAndArticles = $childsAndArticles;
+		$tplTree->hasArticles = implode(' ',$tplClass);
 		$tplTree->childs = $treeChilds;
 
 		if($session['showHideArticles'][$objRow->pid] == 1)
