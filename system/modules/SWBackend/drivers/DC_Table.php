@@ -425,17 +425,23 @@ class DC_Table extends \Contao\DC_Table
 		$level = ($intMargin / $tplTree->intSpacing + 1);
 
 
-		$tplTreeChilds = new \BackendTemplate('be_tree_childs');
-		$tplTreeChilds->level = $level;
-		$tplTreeChilds->node = $node;
-		$tplTreeChilds->id = $id;
-		$tplTreeChilds->table = $this->strTable;
+		$treeChilds = '';
 		if ($childs) {
+			$tplTreeChilds = new \BackendTemplate('be_tree_childs');
+			$tplTreeChilds->level = $level;
+			$tplTreeChilds->node = $node;
+			$tplTreeChilds->id = $id;
+			$tplTreeChilds->table = $this->strTable;
 			$tplTreeChilds->img = ($session[$node][$id] == 1) ? 'folMinus.gif' : 'folPlus.gif';
 			$tplTreeChilds->alt = ($session[$node][$id] == 1) ? ($session[$node][$id] == 1) ? $GLOBALS['TL_LANG']['MSC']['collapseNode'] : $GLOBALS['TL_LANG']['MSC']['expandNode'] : '';
-			$tplTree->childs = $tplTreeChilds->parse();
+			$treeChilds .= $tplTreeChilds->parse();
 		}
-		elseif($this->strTable != $table) {
+		if($this->strTable != $table) {
+			$tplTreeChilds = new \BackendTemplate('be_tree_childs');
+			$tplTreeChilds->level = $level;
+			$tplTreeChilds->node = $node;
+			$tplTreeChilds->id = $id;
+			$tplTreeChilds->table = $this->strTable;
 			// Check whether there are child records
 			if (!$blnNoRecursion) {
 				$objChilds = $this->Database->prepare("SELECT id FROM " . $this->strTable . " WHERE pid=?" . ($blnHasSorting ? " ORDER BY sorting" : ''))->execute($id);
@@ -448,13 +454,15 @@ class DC_Table extends \Contao\DC_Table
 			$tplTreeChilds->img = 'system/modules/SWBackend/assets/'.$img;
 			$tplTreeChilds->alt = $session[$node][$id] == 1 ? $GLOBALS['TL_LANG']['MSC']['collapseNode'] : $GLOBALS['TL_LANG']['MSC']['expandNode'];
 			if($childs) {
-				$tplTree->childs = $tplTreeChilds->parse();
+				$treeChilds .= $tplTreeChilds->parse();
 				$tplClass = 'hasArticles';
 				if($session['showHideArticles'][$id] == 1)
 					$tplClass .= ' open';
 				$tplTree->hasArticles = $tplClass;
 			}
 		}
+
+		$tplTree->childs = $treeChilds;
 
 		if($session['showHideArticles'][$objRow->pid] == 1)
 			$tplTree->hasArticles = 'open';
