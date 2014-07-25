@@ -260,6 +260,7 @@ class DC_Table extends \Contao\DC_Table
 		/* Globale Buttons, Alles aufklappen, Mehere bearbeiten ... */
 		$tplTreeButtons = new \BackendTemplate('be_tree_buttons');
 		$tplTreeButtons->referer = $this->getReferer(true);
+		$tplTreeButtons->request_token = REQUEST_TOKEN;
 		$tplTreeButtons->table = $this->strTable;
 		$tplTreeButtons->globalButtons = $this->generateGlobalButtons();
 		$tplTreeButtons->blnClipboard = $blnClipboard;
