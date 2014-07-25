@@ -444,11 +444,21 @@ class DC_Table extends \Contao\DC_Table
 					$childs = $objChilds->fetchEach('id');
 			}
 			$tplTreeChilds->noRequest = true;
-			$tplTreeChilds->img = 'system/modules/SWBackend/assets/openArticles.png';
-			$tplTreeChilds->alt = ($session[$node][$id] == 1) ? ($session[$node][$id] == 1) ? $GLOBALS['TL_LANG']['MSC']['collapseNode'] : $GLOBALS['TL_LANG']['MSC']['expandNode'] : '';
-			$tplTree->childs = $tplTreeChilds->parse();
-			$tplTree->hasArticles = 'hasArticles';
+			$img = ($session['showHideArticles'][$id] == 1) ? 'closeArticles.png' : 'openArticles.png';
+			$tplTreeChilds->img = 'system/modules/SWBackend/assets/'.$img;
+			$tplTreeChilds->alt = $session[$node][$id] == 1 ? $GLOBALS['TL_LANG']['MSC']['collapseNode'] : $GLOBALS['TL_LANG']['MSC']['expandNode'];
+			if($childs) {
+				$tplTree->childs = $tplTreeChilds->parse();
+				$tplClass = 'hasArticles';
+				if($session['showHideArticles'][$id] == 1)
+					$tplClass .= ' open';
+				$tplTree->hasArticles = $tplClass;
+			}
 		}
+
+		if($session['showHideArticles'][$objRow->pid] == 1)
+			$tplTree->hasArticles = 'open';
+		
 
 
 		foreach ($showFields as $k=>$v) {

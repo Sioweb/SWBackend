@@ -1,5 +1,5 @@
 <?php if($this->childs):?>
-<li class="parent" id="<?php echo $this->node.'_'.$id;?>"><ul class="level_'<?php echo $this->level;?>">
+<li class="parent" id="<?php echo $this->node.'_'.$this->id;?>"><ul class="level_'<?php echo $this->level;?>">
 <?php endif;?>
 <?php echo implode('',$this->pages);?>
 <?php if($this->childs):?>
