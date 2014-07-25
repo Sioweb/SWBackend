@@ -9,14 +9,20 @@ Backend.toggleNextArticles = function(img) {
 		item = parents,
 		nextItem = null;
 	if(parents.hasClass('open') == 'false') {
+		var next = true;
 		img.src = img.src.replace('open','close');
-		while((nextItem = item.addClass('open').getNext()).hasClass('tl_file') == 'true')
+		while(next && (nextItem = item.addClass('open').getNext()).hasClass('tl_file') == 'true') {
 			item = nextItem.addClass('open');
+			next = (item.getNext()[0] != null);
+		}
 	}
 	else {
+		var next = true;
 		img.src = img.src.replace('close','open');
-		while((nextItem = item.removeClass('open').getNext()).hasClass('tl_file') == 'true')
+		while(next && (nextItem = item.removeClass('open').getNext()).hasClass('tl_file') == 'true') {
 			item = nextItem.removeClass('open');
+			next = (item.getNext()[0] != null);
+		}
 	}
 }
 

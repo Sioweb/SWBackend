@@ -33,7 +33,7 @@
 			</ul>
 		</div>
 
-		<?php if(\Input::get('act') == 'select' && \Input::get('popup') !== '1'):?>
+		<?php if(\Input::get('act') != 'select' && \Input::get('popup') !== '1'):?>
 		<div class="tl_formbody_submit" style="text-align:right">
 			<div class="tl_submit_container">
 				<?php if(!$GLOBALS['TL_DCA'][$this->table]['config']['notDeletable']):?>
