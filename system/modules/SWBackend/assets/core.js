@@ -293,7 +293,8 @@ AjaxRequest.toggleVisibility = function(el, id, table) {
 		image = $(el).getFirst('img'),
 		publish = (image.src.indexOf('invisible') != -1),
 		div = el.getParent('div'),
-		next;
+		next,
+		icon = null;
 
 	// Find the icon depending on the view (tree view, list view, parent view)
 	if (div.hasClass('tl_right')) {
@@ -310,31 +311,27 @@ AjaxRequest.toggleVisibility = function(el, id, table) {
 		img = next;
 	}
 
+	if(div.getPrevious('div') != null && div.getPrevious('div').getElement('.icon') != null) 
+		icon = div.getPrevious('div').getElement('.icon img');
+
 	// Change the icon
 	if (img != null) {
 		// Tree view
 		if (img.nodeName.toLowerCase() == 'img') {
-			if (img.getParent('ul.tl_listing').hasClass('tl_tree_xtnd')) {
+			if (!icon && img.getParent('ul.tl_listing').hasClass('tl_tree_xtnd')) {
 				if (publish) {
 					img.src = img.src.replace(/_\.(gif|png|jpe?g)/, '.$1');
 				} else {
 					img.src = img.src.replace(/\.(gif|png|jpe?g)/, '_.$1');
 				}
 			} else {
-				if (img.src.match(/folPlus|folMinus/)) {
-					if (img.getParent('a').getNext('a')) {
-						img = img.getParent('a').getNext('a').getFirst('img');
-					} else {
-						img = new Element('img'); // no icons used (see #2286)
-					}
-				}
 				var index;
 				if (publish) {
-					index = img.src.replace(/.*_([0-9])\.(gif|png|jpe?g)/, '$1');
-					img.src = img.src.replace(/_[0-9]\.(gif|png|jpe?g)/, ((index.toInt() == 1) ? '' : '_' + (index.toInt() - 1)) + '.$1');
+					index = icon.src.replace(/.*_([0-9])\.(gif|png|jpe?g)/, '$1');
+					icon.src = icon.src.replace(/_[0-9]\.(gif|png|jpe?g)/, ((index.toInt() == 1) ? '' : '_' + (index.toInt() - 1)) + '.$1');
 				} else {
-					index = img.src.replace(/.*_([0-9])\.(gif|png|jpe?g)/, '$1');
-					img.src = img.src.replace(/(_[0-9])?\.(gif|png|jpe?g)/, ((index == img.src) ? '_1' : '_' + (index.toInt() + 1)) + '.$2');
+					index = icon.src.replace(/.*_([0-9])\.(gif|png|jpe?g)/, '$1');
+					icon.src = icon.src.replace(/(_[0-9])?\.(gif|png|jpe?g)/, ((index == icon.src) ? '_1' : '_' + (index.toInt() + 1)) + '.$2');
 				}
 			}
 		}
