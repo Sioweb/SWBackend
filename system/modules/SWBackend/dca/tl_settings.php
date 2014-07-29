@@ -43,10 +43,6 @@ $GLOBALS['TL_DCA']['tl_settings']['fields']['navigation_signet'] = array
 	'exclude'                 => true,
 	'inputType'               => 'fileTree',
 	'eval'                    => array('filesOnly'=>true, 'fieldType'=>'radio', 'tl_class'=>'clr'),
-	'sql'                     => "binary(16) NULL",
-	'save_callback'			  => array(
-		array('sw_settings','save_signet')
-	)
 );
 $GLOBALS['TL_DCA']['tl_settings']['fields']['doNotUseTheme'] = array(
 	'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['doNotUseTheme'],
