@@ -4,27 +4,28 @@ String.implement({
 	}
 });
 
-Backend.toggleNextArticles = function(img) {
+Backend.toggleNextArticles = function(img,id) {
 	var parents = img.getParents('.tl_folder'),
 		item = parents,
-		nextItem = null;
+		nextItem = null,
+		next = true;
 	if(parents.hasClass('open') == 'false') {
-		var next = true;
 		img.src = img.src.replace('open','close');
 		while(next && (nextItem = item.addClass('open').getNext()).hasClass('tl_file') == 'true') {
 			item = nextItem.addClass('open');
-			next = (item.getNext()[0] != null);
+			next = (item.getNext()[0] !== null);
 		}
+		new Request.Contao().post({'action':'toggleNextArticles', 'id':id, 'state':1, 'REQUEST_TOKEN':Contao.request_token});
 	}
 	else {
-		var next = true;
 		img.src = img.src.replace('close','open');
 		while(next && (nextItem = item.removeClass('open').getNext()).hasClass('tl_file') == 'true') {
 			item = nextItem.removeClass('open');
-			next = (item.getNext()[0] != null);
+			next = (item.getNext()[0] !== null);
 		}
+		new Request.Contao().post({'action':'toggleNextArticles', 'id':id, 'state':0, 'REQUEST_TOKEN':Contao.request_token});
 	}
-}
+};
 
 Backend.siowebOptionsWizard = function(item,mode,id) {
 	var tl_right = item.getParent(),
@@ -111,7 +112,7 @@ Backend.openModalOptionsWizard = function(options){
 		'width': opt.width,
 		'btn_ok': Contao.lang.close,
 		'draggable': false,
-		'overlayOpacity': .5,
+		'overlayOpacity': 0.5,
 		'onShow': function() { document.body.setStyle('overflow', 'hidden'); },
 		'onHide': function() { document.body.setStyle('overflow', 'auto'); }
 	});
@@ -175,7 +176,7 @@ Backend.openModalFolderSelector = function(options) {
 		'width': opt.width,
 		'btn_ok': Contao.lang.close,
 		'draggable': false,
-		'overlayOpacity': .5,
+		'overlayOpacity': 0.5,
 		'onShow': function() { document.body.setStyle('overflow', 'hidden'); },
 		'onHide': function() { document.body.setStyle('overflow', 'auto'); }
 	});

@@ -9,8 +9,8 @@
 	<?php endif;?>
 
 	<?php if(\Input::get('act') != 'select' && !$this->blnClipboard && !$GLOBALS['TL_DCA'][$this->table]['config']['closed']):?>
-	<a href="<?php echo $this->addToUrl('act=paste&amp;mode=create&amp;use=tl_page');?>" class="header_new" title="<?php echo specialchars($GLOBALS['TL_LANG']['tl_page']['new'][1]);?>" accesskey="n" onclick="Backend.getScrollOffset()"><?php echo $GLOBALS['TL_LANG']['tl_page']['new'][0];?></a>
-	<a href="<?php echo $this->addToUrl('act=paste&amp;mode=create&amp;use=tl_article');?>" class="header_new" title="<?php echo specialchars($GLOBALS['TL_LANG'][$this->table]['new'][1]);?>" accesskey="n" onclick="Backend.getScrollOffset()"><?php echo $GLOBALS['TL_LANG'][$this->table]['new'][0];?></a>
+	<a href="<?php echo $this->addToUrl('act=paste&amp;mode=create&amp;use=tl_page&rt='.REQUEST_TOKEN);?>" class="header_new" title="<?php echo specialchars($GLOBALS['TL_LANG']['tl_page']['new'][1]);?>" accesskey="n" onclick="Backend.getScrollOffset()"><?php echo $GLOBALS['TL_LANG']['tl_page']['new'][0];?></a>
+	<a href="<?php echo $this->addToUrl('act=paste&amp;mode=create&amp;use=tl_article&rt='.REQUEST_TOKEN);?>" class="header_new" title="<?php echo specialchars($GLOBALS['TL_LANG'][$this->table]['new'][1]);?>" accesskey="n" onclick="Backend.getScrollOffset()"><?php echo $GLOBALS['TL_LANG'][$this->table]['new'][0];?></a>
 	<?php endif;?> 
 
 	<?php if(\Input::get('act') != 'select' && !$this->blnClipboard):?>
