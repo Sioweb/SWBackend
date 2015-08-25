@@ -143,6 +143,9 @@ var document = window.document,
 						Data[index] = elem.innerHTML;
 				});
 				return Data;
+			},
+			data: function(type) {
+				return this['0'][0].dataset[type];
 			}
 		});
 
@@ -225,7 +228,7 @@ var document = window.document,
 						success: settings.success||function(msg){},
 						onsending: settings.onsending||function(state,status){
 							if(state == 4)
-								if(status == 200)
+								if(status >= 200 || status <= 220)
 									selfObj.success(selfObj.xhr.responseText);
 								else
 									selfObj.error(selfObj.xhr.responseText);
@@ -331,7 +334,8 @@ var document = window.document,
 			sendFiles: function(files,settings){
 				var form = this.FormData(),
 					selfObj = arguments[2]||null,
-					selfItems = selfObj['0'];
+					selfItems = selfObj['0'],
+					url = JSON.parse('{"' + decodeURI(location.search.substring(1)).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g,'":"') + '"}');
 
 				if(settings.data)
 					selfObj.each(settings.data,function(index, value){
@@ -341,16 +345,19 @@ var document = window.document,
 				for (var i = 0; i < files.length; i++)
 					form.append('files[]', files[i]);
 
+				form.append('cid',url.id);
+				form.append('action','sw_fileupload');
 				form.append('fieldName',selfItems[0].getElementsByTagName('input')[0].name);
 				form.append('REQUEST_TOKEN',contao.request_token);
 
 				this.ajax(selfObj.merge(settings,{
 					items: selfItems,
 					files: files,
-					setAjaxHeader: false,
+					setAjaxHeader: true,
+					success: Backend.addModalItems,
 					contentMimeType: form.contentMimeType||null,
 					url: 'contao/main.php?do=files&act=move&mode=2&pid='+settings.path+'&id=&rt=' + contao.request_token,
-					data: form
+					data: form,
 				}));
 			},
 			FormData: function(){
