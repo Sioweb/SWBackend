@@ -1,0 +1,237 @@
+/**
+ * Contao Open Source CMS
+ *
+ * @author Sascha Weidner
+ * @Copyright Sascha Weidner, Sioweb
+ */
+
+/* Body */
+body {
+	background:#2e2f31 url("images/body.jpg") repeat-x;
+}
+
+/* Header */
+#header {
+	width:100%;
+	color: #fff;
+	background: #23343b;
+	box-shadow: 0 0 40px 0 #005ba9;
+	background-image: -moz-linear-gradient(top, #626769, #23343b);
+	background-image: -webkit-linear-gradient(top, #626769, #23343b);
+	background-image: -o-linear-gradient(top, #626769, #23343b);
+	background-image: -ms-linear-gradient(top, #626769, #23343b);
+	background-image: linear-gradient(to bottom, #626769, #23343b);
+	border-bottom: 10 px solid #005ba9;
+}
+h1 {
+	margin:0;
+	color: #fff;
+	padding: 1em 2% 1em 4%;
+	padding: 1em 2% 1em calc(2% + 40px);
+	background:url("images/logo.gif") no-repeat 2% center;
+}
+
+h1 a {
+	color: #fff;
+	float: right;
+}
+
+/* Container */
+#container {
+	width: 500px;
+	padding:0;
+	margin: 50px auto 0;
+	position: relative;
+
+	overflow: hidden;
+
+	background: white;
+	border: 5px solid #005ba9;
+	border-radius: 20px;
+	box-shadow: 3px 3px 10px 0px #222;
+}
+
+#go_to_frontend {
+	left: 5%;
+	bottom: 0;
+	float: left;
+	position: absolute;
+	margin-bottom: 5%;
+	padding-left: 20px;
+	background:url("images/login.gif") no-repeat left center;
+}
+
+/* License (do not remove) */
+#tl_license {
+	width: 96%;
+	margin: 40px auto;
+	position: relative;
+}
+#tl_license p {
+	line-height:15px;
+	text-align:justify;
+}
+#tl_license p,#tl_license a {
+	color:#777;
+}
+#tl_license a:hover,#tl_license a:focus,#tl_license a:active {
+	color:#77ac45;
+}
+
+figure img {
+	display: block;
+	max-width: 100%;
+}
+
+form,
+.left {
+	width: 40%;
+	float: left;
+	padding: 5%;
+}
+
+.left {
+	padding-bottom: 10%;
+}
+
+fieldset {
+	border: 0 none;
+	padding: 0;
+	margin: 0;
+}
+fieldset > * {
+	position: relative;
+	margin-bottom: .5em;
+}
+
+label {
+	display: block;
+	background: #fff;
+}
+input[type="text"],
+input[type="password"] {
+	top: 0;
+	left: 0;
+	border: 0 none;
+	background: #fff;
+	position: absolute;
+}
+
+input.empty {
+	background: none;
+}
+
+label,
+input[type="text"],
+input[type="password"] {
+	display: block;
+	width: 150px;
+	height: 20px;
+	font-size: 18px;
+	border-radius: 5px;
+	padding: .3em .5em .2em;
+}
+
+label {
+	border: 1px solid #ddd;
+}
+
+input[type="text"],
+input[type="password"] {
+	margin-left: 1px
+}
+
+
+input:-webkit-autofill {
+	border: 0 none;
+    -webkit-box-shadow:0 0 0 50px white inset; /* Change the color to your own background color */
+    -webkit-text-fill-color: #333;
+}
+input:-webkit-autofill:focus {
+	border: 0 none;
+    -webkit-box-shadow: 50px,0 0 0 50px white inset;
+    -webkit-text-fill-color: #333;
+}
+
+.tl_select {
+	width: 169px;
+}
+
+.tl_submit {
+	margin: 0;
+}
+
+fieldset .tl_login_submit_container {
+	margin: 0;
+}
+
+/* Error messages */
+.login_error {
+	margin:1px 0 0;
+	padding:2px 0 3px 20px;
+	background:url("images/error.gif") no-repeat left center;
+}
+.login_error label {
+	color:#c33;
+}
+.tl_error {
+	color:#c33;
+}
+.tl_info {
+	color:#4b85ba;
+}
+.tl_confirm {
+	color:#77ac45;
+}
+
+@media screen and (min-width: 510px) and (min-height: 500px) {
+	#container {
+		top: 50%;
+		left: 50%;
+		position: absolute;
+		margin:-94px 0 0 -260px;
+	}
+
+	#tl_license {
+		left: 2%;
+		right: 2%;
+		margin: 0;
+		bottom: 1%;
+		position: absolute;
+	}
+}
+
+@media screen and (max-width: 510px) {
+
+	#container {
+		height: auto;
+		width: 96%;
+		width: calc(96% - 10px);
+	}
+	form, .left {
+		width: 90%;
+		float: left;
+		padding: 5%;
+	}
+	.left {
+		padding-bottom: 0;
+	}
+
+	#go_to_frontend {
+		left: auto;
+		bottom: auto;
+		position: relative;
+		margin: 0 5% 5%;
+	}
+
+	label,
+	input[type=text] {
+		width: calc(100% - 1em - 2px);
+	}
+	.tl_select {
+		width: calc(100% - 2px);
+	}
+	.tl_submit {
+		width: calc(100% - 2px);
+	}
+}
