@@ -23,7 +23,7 @@ class SWBackend extends Sioweb {
     if(strpos(\Environment::get('phpSelf'),'install.php') !== false)
       return;
 
-    $GLOBALS['TL_HOOKS']['executePostActions'][] = array('Backend','executePostActions');
+    $GLOBALS['TL_HOOKS']['executePostActions'][] = array('Backend','swExecutePostActions');
 
     $this->getBackendUser();
     $this->BackendUser = \BackendUser::getInstance();
@@ -98,7 +98,7 @@ class SWBackend extends Sioweb {
   private function loadDragNDropUploader() {
     \ClassLoader::addClasses(array(
       // Widgets
-      'FileTree' => 'system/modules/SWBackend/widgets/'.$this->tl_version.'FileTree.php'
+      'FileTree' => 'system/modules/SWBackend/widgets/'.(TL_VERSION < 3.3?'3.1/':'').'FileTree.php'
     ));
     $GLOBALS['TL_HOOKS']['loadDataContainer'][] = array('Sioweb', 'extendFileTree');
     $GLOBALS['TL_JAVASCRIPT'][] = 'system/modules/SWBackend/assets/dragAndDrop.js';

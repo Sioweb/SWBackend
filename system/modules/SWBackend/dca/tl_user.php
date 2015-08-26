@@ -26,14 +26,16 @@ $GLOBALS['TL_DCA']['tl_user']['fields']['mergeSitesAndArticles'] = array(
   'sql'                     => "char(1) NOT NULL default '1'"
 
 );
-$GLOBALS['TL_DCA']['tl_user']['fields']['useDragNDropUploader'] = array(
-  'label'                   => &$GLOBALS['TL_LANG']['tl_user']['useDragNDropUploader'],
-  'exclude'                 => true,
-  'inputType'               => 'checkbox',
-  'eval'                    => array('tl_class'=>'w50'),
-  'sql'                     => "char(1) NOT NULL default ''"
-);
 
+if(TL_VERSION > 3.2) {
+  $GLOBALS['TL_DCA']['tl_user']['fields']['useDragNDropUploader'] = array(
+    'label'                   => &$GLOBALS['TL_LANG']['tl_user']['useDragNDropUploader'],
+    'exclude'                 => true,
+    'inputType'               => 'checkbox',
+    'eval'                    => array('tl_class'=>'w50'),
+    'sql'                     => "char(1) NOT NULL default ''"
+  );
+}
 $GLOBALS['TL_DCA']['tl_user']['fields']['showSignetInNavi'] = array(
   'label'                   => &$GLOBALS['TL_LANG']['tl_user']['showSignetInNavi'],
   'exclude'                 => true,

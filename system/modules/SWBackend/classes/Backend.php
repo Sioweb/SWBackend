@@ -312,7 +312,7 @@ class Backend extends \Contao\Backend
     return null;
   }
 
-  public function executePostActions($strAction, DataContainer $dc){
+  public function swExecutePostActions($strAction, DataContainer $dc){
     switch($strAction) {
       case 'toggleArticle':
         $this->strAjaxId = preg_replace('/.*_([0-9a-zA-Z]+)$/', '$1', \Input::post('id'));

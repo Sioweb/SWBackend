@@ -210,6 +210,7 @@ Backend.openModalFolderSelector = function(options) {
     }
     var Container = frm.document.getElementById('tl_listing');
       inp = '';
+
     if(typeof Container === 'undefined')
       Container = frm.document.getElementById('tl_select');
     
