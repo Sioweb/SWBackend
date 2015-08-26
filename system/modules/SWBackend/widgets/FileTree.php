@@ -4,8 +4,8 @@
 /**
 * Contao Open Source CMS
 *  
-* @file SWBackend.php
-* @class SWBackend
+* @file FileTree.php
+* @class FileTree
 * @author Sascha Weidner
 * @version 3.0.0
 * @package sioweb.contao.extensions.backend
@@ -182,7 +182,13 @@ class FileTree extends \Contao\FileTree {
     }
 
     // Load the fonts for the drag hint (see #4838)
-    \Config::set('loadGoogleFonts', true);
+    if(method_exists('Contao\Config','set')) {
+      \Config::set('loadGoogleFonts', true);
+    } elseif(method_exists('Contao\Config','add')) {
+
+      $this->Config->add('$GLOBALS[\'TL_CONFIG\'][\'loadGoogleFonts\']',true);
+    }
+
 
     // Convert the binary UUIDs
     $strSet = implode(',', array_map('StringUtil::binToUuid', $arrSet));

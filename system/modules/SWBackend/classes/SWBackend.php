@@ -19,6 +19,7 @@ class SWBackend extends Sioweb {
   protected $isSiowebTheme = false;
 
   public function sw_initialize() {
+    $this->tl_version = (TL_VERSION < 3.2?'3.1/':'');
     if(strpos(\Environment::get('phpSelf'),'install.php') !== false)
       return;
 
@@ -77,7 +78,7 @@ class SWBackend extends Sioweb {
       ) && !$this->isSiowebTheme
     ) {
       \TemplateLoader::addFiles(array(
-        'be_main'     => 'system/modules/SWBackend/templates/noTheme/backend',
+        'be_main'     => 'system/modules/SWBackend/templates/'.$this->tl_version.'noTheme/backend',
       ));
       $GLOBALS['TL_CSS'][] = 'system/modules/SWBackend/assets/main.css';
     }
@@ -97,7 +98,7 @@ class SWBackend extends Sioweb {
   private function loadDragNDropUploader() {
     \ClassLoader::addClasses(array(
       // Widgets
-      'FileTree' => 'system/modules/SWBackend/widgets/FileTree.php'
+      'FileTree' => 'system/modules/SWBackend/widgets/'.$this->tl_version.'FileTree.php'
     ));
     $GLOBALS['TL_HOOKS']['loadDataContainer'][] = array('Sioweb', 'extendFileTree');
     $GLOBALS['TL_JAVASCRIPT'][] = 'system/modules/SWBackend/assets/dragAndDrop.js';

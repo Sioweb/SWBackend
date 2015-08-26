@@ -208,7 +208,12 @@ Backend.openModalFolderSelector = function(options) {
       alert(Contao.lang.picker);
       return; // see #5704
     }
-    var inp = frm.document.getElementById('tl_select').getElementsByTagName('input');
+    var Container = frm.document.getElementById('tl_listing');
+      inp = '';
+    if(typeof Container === 'undefined')
+      Container = frm.document.getElementById('tl_select');
+    
+    Container.getElementsByTagName('input');
     for(var i=0; i<inp.length; i++) {
       if(!inp[i].checked || inp[i].id.match(/^check_all_/)) continue;
       if(!inp[i].id.match(/^reset_/)) val.push(inp[i].get('value'));

@@ -40,6 +40,17 @@ ClassLoader::addClasses(array
   'sioweb\contao\extensions\backend\ContentSeparator'   => 'system/modules/SWBackend/elements/ContentSeparator.php',
 ));
 
+if(!class_exists('\\Contao\\StringUtil')) {
+/**
+ * Register the classes
+ */
+ClassLoader::addClasses(array
+(
+  // Classes
+  'Contao\StringUtil'       => 'system/modules/SWBackend/library/sioweb/StringUtil.php',
+));
+}
+
 \TemplateLoader::addFiles(array(
   'ce_separator'    => 'system/modules/SWBackend/templates/elements',
   'be_panel'      => 'system/modules/SWBackend/templates/backend/panel',
