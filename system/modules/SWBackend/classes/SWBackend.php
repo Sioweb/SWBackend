@@ -19,7 +19,8 @@ class SWBackend extends Sioweb {
   protected $isSiowebTheme = false;
 
   public function sw_initialize() {
-    $this->tl_version = (TL_VERSION < 3.2?'3.1/':'');
+    $this->tl_version = (TL_VERSION < 3.3?'3.1/':'');
+    $this->tl_version = (TL_VERSION < 3.4 && TL_VERSION >= 3.3?'3.3/':'');
     if(strpos(\Environment::get('phpSelf'),'install.php') !== false)
       return;
 
