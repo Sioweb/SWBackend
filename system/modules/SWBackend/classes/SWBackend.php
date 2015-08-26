@@ -19,8 +19,8 @@ class SWBackend extends Sioweb {
   protected $isSiowebTheme = false;
 
   public function sw_initialize() {
-    $this->tl_version = (TL_VERSION < 3.3?'3.1/':'');
-    $this->tl_version = (TL_VERSION < 3.4 && TL_VERSION >= 3.3?'3.3/':'');
+    $this->tl_version = (VERSION < 3.3?'3.1/':'');
+    $this->tl_version = (VERSION < 3.4 && VERSION >= 3.3?'3.3/':'');
     if(strpos(\Environment::get('phpSelf'),'install.php') !== false)
       return;
 
@@ -99,7 +99,7 @@ class SWBackend extends Sioweb {
   private function loadDragNDropUploader() {
     \ClassLoader::addClasses(array(
       // Widgets
-      'FileTree' => 'system/modules/SWBackend/widgets/'.(TL_VERSION < 3.3?'3.1/':'').'FileTree.php'
+      'FileTree' => 'system/modules/SWBackend/widgets/'.(VERSION < 3.3?'3.1/':'').'FileTree.php'
     ));
     $GLOBALS['TL_HOOKS']['loadDataContainer'][] = array('Sioweb', 'extendFileTree');
     $GLOBALS['TL_JAVASCRIPT'][] = 'system/modules/SWBackend/assets/dragAndDrop.js';
@@ -111,6 +111,7 @@ class SWBackend extends Sioweb {
 
     \ClassLoader::addClasses(array(
       // Classes
+      'sioweb\contao\extensions\backend\DC_File'        => 'system/modules/SWBackend/drivers/DC_File.php',
       'sioweb\contao\extensions\backend\DC_Table'       => 'system/modules/SWBackend/drivers/DC_Table.php',
       'sioweb\contao\extensions\backend\DC_Folder'      => 'system/modules/SWBackend/drivers/DC_Folder.php',
     ));

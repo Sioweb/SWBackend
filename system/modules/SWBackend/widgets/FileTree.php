@@ -19,6 +19,9 @@ class FileTree extends \Contao\FileTree {
    */
   public function generate()
   {
+    if(!in_array($this->strName,array('singleSRC','multiSRC')))
+      return parent::generate();
+
     $arrSet = array();
     $arrValues = array();
     $blnHasOrder = ($this->orderField != '' && is_array($this->{$this->orderField}));

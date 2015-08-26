@@ -320,4 +320,14 @@ class DC_Folder extends \Contao\DC_Folder {
       }
     }
   }
+
+
+  /**
+   * Show header of the parent table and list all records of the current table
+   * @return string
+   */
+  // public function showAll() {
+  //   $return = parent::showAll();
+  //   return preg_replace('/(<(a.+?(?<!class=")[^>]*)>(<img.+?(?<!src=")src=".+?(?<!images\/)images+\/([a-z]+)\.[^"]+"[^<]+>)<\/a>)\s*/','<$2 class="icon-$4">$5</a>',$return);
+  // }
 }

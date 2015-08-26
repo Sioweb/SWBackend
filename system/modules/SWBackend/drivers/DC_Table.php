@@ -653,8 +653,10 @@ class DC_Table extends \Contao\DC_Table
   {
 
     if(\Input::get('do') != 'article')
-      return parent::parentView();
-
+      if($this->BackendUser->backendTheme == 'sioweb')
+        return preg_replace('/(<(a.+?(?<!class=")[^>]*)>(<img.+?(?<!src=")src=".+?(?<!images\/)images+\/([a-z]+)\.[^"]+"[^<]+>)<\/a>)\s*/is','<$2 class="icon-$4">$5</a>',parent::parentView());
+      else return parent::parentView();
+      
     $blnClipboard = false;
     $arrClipboard = $this->Session->get('CLIPBOARD');
     $table = ($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['mode'] == 6) ? $this->ptable : $this->strTable;

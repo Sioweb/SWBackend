@@ -27,7 +27,7 @@ class Sioweb extends \Controller
   {
     if(!$GLOBALS['SWBackend']['fileTree'])
       foreach($GLOBALS['TL_DCA'][$strName]['fields'] as $fKey => $field)
-        if($field['inputType'] == 'fileTree')
+        if($field['inputType'] == 'fileTree' && in_array($fKey,array('singleSRC','multiSRC')))
           if($GLOBALS['TL_DCA'][$strName]['fields'][$fKey]['eval']['tl_class'])
             $GLOBALS['TL_DCA'][$strName]['fields'][$fKey]['eval']['tl_class'] .= ' dragNdrop';
           else
