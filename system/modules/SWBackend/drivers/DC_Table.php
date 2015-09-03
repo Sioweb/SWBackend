@@ -337,16 +337,37 @@ class DC_Table extends \Contao\DC_Table
     {
       $callbacks = '';
 
-      // Call the buttons_callback
-      if(is_array($GLOBALS['TL_DCA'][$this->strTable]['edit']['buttons_callback']))
-      {
-        foreach ($GLOBALS['TL_DCA'][$this->strTable]['edit']['buttons_callback'] as $callback)
-        {
-          $this->import($callback[0]);
-          $tplTree->callbacks .= $this->$callback[0]->$callback[1]($this);
+      $arrSubmitButtons = array();
+
+      if (!$GLOBALS['TL_DCA'][$this->strTable]['config']['notDeletable'])
+        $arrSubmitButtons['delete'] = '<input type="submit" name="delete" id="delete" class="tl_submit" accesskey="d" onclick="return confirm(\''.$GLOBALS['TL_LANG']['MSC']['delAllConfirm'].'\')" value="'.specialchars($GLOBALS['TL_LANG']['MSC']['deleteSelected']).'">';
+
+      if (!$GLOBALS['TL_DCA'][$this->strTable]['config']['notSortable'])
+        $arrSubmitButtons['cut'] = '<input type="submit" name="cut" id="cut" class="tl_submit" accesskey="x" value="'.specialchars($GLOBALS['TL_LANG']['MSC']['moveSelected']).'">';
+
+      if (!$GLOBALS['TL_DCA'][$this->strTable]['config']['notCopyable'])
+        $arrSubmitButtons['copy'] = '<input type="submit" name="copy" id="copy" class="tl_submit" accesskey="c" value="'.specialchars($GLOBALS['TL_LANG']['MSC']['copySelected']).'">';
+
+      if (!$GLOBALS['TL_DCA'][$this->strTable]['config']['notEditable'])
+        $arrSubmitButtons['override'] = '<input type="submit" name="override" id="override" class="tl_submit" accesskey="v" value="'.specialchars($GLOBALS['TL_LANG']['MSC']['overrideSelected']).'">';
+        $arrSubmitButtons['edit'] = '<input type="submit" name="edit" id="edit" class="tl_submit" accesskey="s" value="'.specialchars($GLOBALS['TL_LANG']['MSC']['editSelected']).'">';
+
+      // Call the buttons_callback (see #4691)
+      if (is_array($GLOBALS['TL_DCA'][$this->strTable]['select']['buttons_callback'])) {
+        foreach ($GLOBALS['TL_DCA'][$this->strTable]['select']['buttons_callback'] as $callback) {
+          if (is_array($callback)) {
+            $this->import($callback[0]);
+            $arrSubmitButtons = $this->$callback[0]->$callback[1]($arrSubmitButtons, $this);
+          } elseif (is_callable($callback)) {
+            $arrSubmitButtons = $callback($arrSubmitButtons, $this);
+          }
         }
       }
+
+      $tplTree->callbacks .= implode("\n",$arrSubmitButtons);
     }
+
+    $tplTree->request_token = REQUEST_TOKEN;
 
     $return .= $tplTree->parse();
 
@@ -534,20 +555,24 @@ class DC_Table extends \Contao\DC_Table
     $next = ($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['mode'] == 6) ? $arrPrevNext['nn'] : $arrPrevNext['n'];
     $_button = $_buttons = '';
 
-    // use=tl_tabelle Damit ich in do=article bleiben und die Tabelle use=tabelle nuten kann.
-    // Regular buttons ($row, $table, $root, $blnCircularReference, $childs, $previous, $next)
-    foreach($GLOBALS['TL_DCA'][$table]['list']['operations'] as $oKey => &$operation)
-      if(in_array($oKey,array('edit','editHeader','toggle')))
-        $operation['href'] = 'use='.$table.'&amp;do='.end((explode('_',$table))).'&amp;'.str_replace('use='.$table.'&amp;do='.end((explode('_',$table))).'&amp;','',$operation['href']);
-      else 
-        $operation['href'] = 'use='.$table.'&amp;'.str_replace('use='.$table.'&amp;','',$operation['href']);
-    
-    // BTW Ich hab keine Ahnung mehr wann ich $this->strTable und wann $table brauche ... 
-    $_button .= (\Input::get('act') == 'select' && $table == \Input::get('use')) ? '<input type="checkbox" name="IDS[]" id="ids_'.$id.'" class="tl_tree_checkbox" value="'.$id.'">' : $this->generateButtons($objRow->row(), ($this->strTable == \Input::get('use') ? $this->strTable : $table), $this->root, $blnCircularReference, $childs, $previous, $next);
-    
-    $_button = preg_replace('/(<a(.+?(?<!class="))class="([^"]+)"([^>]*)>(<img.+?(?<!src=")src=".+?(?<!images\/)images+\/([a-z]+)\.[^"]+"[^<]+>)<\/a>)\s*/','<a class="$3 $3_$6" $2$4>$5</a>',$_button);
-    
-    $_buttons .= $_button;
+    if(\Input::get('act') != 'select') {
+      // use=tl_tabelle Damit ich in do=article bleiben und die Tabelle use=tabelle nuten kann.
+      // Regular buttons ($row, $table, $root, $blnCircularReference, $childs, $previous, $next)
+      foreach($GLOBALS['TL_DCA'][$table]['list']['operations'] as $oKey => &$operation)
+        if(in_array($oKey,array('edit','editHeader','toggle')))
+          $operation['href'] = 'use='.$table.'&amp;do='.end((explode('_',$table))).'&amp;'.str_replace('use='.$table.'&amp;do='.end((explode('_',$table))).'&amp;','',$operation['href']);
+        else 
+          $operation['href'] = 'use='.$table.'&amp;'.str_replace('use='.$table.'&amp;','',$operation['href']);
+      
+      // BTW Ich hab keine Ahnung mehr wann ich $this->strTable und wann $table brauche ... 
+      $_button .= (\Input::get('act') == 'select' && $table == \Input::get('use')) ? '<input type="checkbox" name="IDS[]" id="ids_'.$id.'" class="tl_tree_checkbox" value="'.$id.'">' : $this->generateButtons($objRow->row(), ($this->strTable == \Input::get('use') ? $this->strTable : $table), $this->root, $blnCircularReference, $childs, $previous, $next);
+      
+      $_button = preg_replace('/(<a(.+?(?<!class="))class="([^"]+)"([^>]*)>(<img.+?(?<!src=")src=".+?(?<!images\/)images+\/([a-z]+)\.[^"]+"[^<]+>)<\/a>)\s*/','<a class="$3 $3_$6" $2$4>$5</a>',$_button);
+      
+      $_buttons .= $_button;
+    } else {
+      $_buttons .= '<input type="checkbox" name="IDS[]" id="ids_'.$id.'" value="'.$id.'" class="tl_tree_checkbox">';
+    }
     $_button = '';
 
     // Paste buttons

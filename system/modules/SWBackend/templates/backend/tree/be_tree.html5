@@ -33,7 +33,7 @@
 			</ul>
 		</div>
 
-		<?php if(\Input::get('act') != 'select' && \Input::get('popup') !== '1'):?>
+		<?php /** /if(\Input::get('act') != 'select' && \Input::get('popup') !== '1'):?>
 		<div class="tl_formbody_submit" style="text-align:right">
 			<div class="tl_submit_container">
 				<?php if(!$GLOBALS['TL_DCA'][$this->table]['config']['notDeletable']):?>
@@ -46,6 +46,13 @@
 				<input type="submit" name="override" id="override" class="tl_submit" accesskey="v" value="<?php echo specialchars($GLOBALS['TL_LANG']['MSC']['overrideSelected']);?>">
 				<input type="submit" name="edit" id="edit" class="tl_submit" accesskey="s" value="<?php echo specialchars($GLOBALS['TL_LANG']['MSC']['editSelected']);?>">
 				<?php endif;?>
+				<?php echo $this->callbacks;?>
+			</div>
+		</div>
+		<?php endif;/**/?>
+		<?php if(\Input::get('act') == 'select' && \Input::get('popup') !== '1'):?>
+		<div class="tl_formbody_submit" style="text-align:right">
+			<div class="tl_submit_container">
 				<?php echo $this->callbacks;?>
 			</div>
 		</div>

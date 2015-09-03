@@ -24,6 +24,12 @@ class SWBackend extends Sioweb {
     if(strpos(\Environment::get('phpSelf'),'install.php') !== false)
       return;
 
+    if(!class_exists('\\Contao\\StringUtil'))
+      \ClassLoader::addClasses(array(
+        // Classes
+        'Contao\StringUtil' => 'system/modules/SWBackend/library/sioweb/StringUtil.php',
+      ));
+
     $GLOBALS['TL_HOOKS']['executePostActions'][] = array('Backend','swExecutePostActions');
 
     $this->getBackendUser();

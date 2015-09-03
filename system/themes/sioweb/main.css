@@ -1636,6 +1636,7 @@ a.navigation:before {
   margin-right: 5px;
 }
 
+.tl_info:before,
 .tl_right *:before,
 #tl_buttons *:before,
 .tl_listing *:before,

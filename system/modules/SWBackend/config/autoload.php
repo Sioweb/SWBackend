@@ -39,7 +39,7 @@ ClassLoader::addClasses(array
   // Elements
   'sioweb\contao\extensions\backend\ContentSeparator'   => 'system/modules/SWBackend/elements/ContentSeparator.php',
 ));
-
+  
 
 \TemplateLoader::addFiles(array(
   'ce_separator'    => 'system/modules/SWBackend/templates/elements',
